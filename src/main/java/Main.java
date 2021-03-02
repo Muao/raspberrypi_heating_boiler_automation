@@ -4,8 +4,8 @@ import jssc.SerialPortException;
 public class Main {
 
     public static void main(String[] args) {
-
-        SerialPort serialPort = new SerialPort("COM1");
+        System.out.println("it's working");
+        /*SerialPort serialPort = new SerialPort("COM1");
         try {
             //Открываем порт
             serialPort.openPort();
@@ -24,6 +24,6 @@ public class Main {
         }
         catch (SerialPortException ex) {
             ex.printStackTrace();
-        }
+        }*/
     }
 }
