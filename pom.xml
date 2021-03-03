@@ -9,15 +9,19 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <distributionManagement>
-        <repository>
-            <id>raspberry</id>
-            <url>scp://pi@192.168.88.228/home/pi/jar</url>
-        </repository>
-    </distributionManagement>
-
     <build>
-        <finalName>boiler3</finalName>
+        <finalName>bau</finalName>
+
+        <!--upload build jar to raspberry via ssh.-->
+        <!--needs add to maven settings.xml (usually allocated C:\Users\YOUR_DIRECTORY\.m2\settings.xml) next:
+        <servers>
+        <server>
+        <id>raspberry</id> same in <serverId>
+        <username>pi</username>
+        <password>pwd</password>
+        </server>
+        </servers>
+        -->
         <extensions>
             <extension>
                 <groupId>org.apache.maven.wagon</groupId>
@@ -25,8 +29,26 @@
                 <version>3.4.3</version>
             </extension>
         </extensions>
-
             <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>wagon-maven-plugin</artifactId>
+                    <version>2.0.2</version>
+                    <executions>
+                        <execution>
+                            <id>upload-deploy</id>
+                            <phase>package</phase>
+                    <goals>
+                        <goal>upload-single</goal>
+                    </goals>
+                            <configuration>
+                                <serverId>raspberry</serverId> <!--same in <server><id>-->
+                                <fromFile>target/${project.build.finalName}.${project.packaging}</fromFile>
+                                <url>scp://192.168.88.228/home/pi</url>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
                 <!--add manifest to jar-->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -41,26 +63,17 @@
                         </archive>
                     </configuration>
                 </plugin>
-
-                <!--skip install phase-->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-install-plugin</artifactId>
-                    <version>2.5.2</version>
-                    <executions>
-                        <execution>
-                            <id>default-install</id>
-                            <phase>none</phase>
-                        </execution>
-                    </executions>
-                    <configuration>
-                        <skip>true</skip>
-                    </configuration>
-                </plugin>
             </plugins>
     </build>
 
     <dependencies>
+        <!--needs for working wagon-maven-plugin for remote deploy via ssh-->
+        <dependency>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>wagon-maven-plugin</artifactId>
+            <version>2.0.2</version>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/org.scream3r/jssc -->
         <dependency>
             <groupId>org.scream3r</groupId>
