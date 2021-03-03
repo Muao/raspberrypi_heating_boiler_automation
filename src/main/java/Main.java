@@ -1,10 +1,27 @@
-import jssc.SerialPort;
-import jssc.SerialPortException;
+import com.pi4j.io.gpio.*;
 
 public class Main {
 
-    public static void main(String[] args) {
-        System.out.println("it's working");
+    public static void main(String[] args) throws InterruptedException {
+
+            System.out.println("it's working " );
+
+//        GpioFactory.setDefaultProvider(new RaspiGpioProvider(RaspiPinNumberingScheme.BROADCOM_PIN_NUMBERING));
+
+        GpioPinDigitalOutput op = GpioFactory.getInstance().provisionDigitalOutputPin(RaspiPin.GPIO_29);
+        for (int i = 0; i < 20; i++) {
+//            op.high();
+            op.setState(true);
+            System.out.println("on");
+            Thread.sleep(3000);
+            op.setState(false);
+            Thread.sleep(3000);
+//            op.low();
+            System.out.println("off");
+        }
+
+
+
         /*SerialPort serialPort = new SerialPort("COM1");
         try {
             //Открываем порт
