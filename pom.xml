@@ -40,11 +40,16 @@
                             <phase>package</phase>
                     <goals>
                         <goal>upload-single</goal>
+                        <goal>sshexec</goal>
                     </goals>
                             <configuration>
                                 <serverId>raspberry</serverId> <!--same in <server><id>-->
                                 <fromFile>target/${project.build.finalName}.${project.packaging}</fromFile>
                                 <url>scp://192.168.88.228/home/pi</url>
+                                <commands>
+                                    <command>java -jar /home/pi/${project.build.finalName}.${project.packaging}</command>
+                                </commands>
+                                <displayCommandOutputs>true</displayCommandOutputs>
                             </configuration>
                         </execution>
                     </executions>
