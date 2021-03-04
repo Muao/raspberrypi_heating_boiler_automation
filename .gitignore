@@ -1,5 +1,5 @@
 /.idea/*
 /.git/*
 /raspberrypi_heating_boiler_automation.iml
-
+/src/main/resources/config.properties
 /target/
