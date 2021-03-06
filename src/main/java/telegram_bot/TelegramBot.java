@@ -1,10 +1,10 @@
 package telegram_bot;
 
 
-import com.pi4j.io.gpio.*;
+import com.pi4j.io.gpio.GpioFactory;
+import com.pi4j.io.gpio.GpioPinDigitalOutput;
+import com.pi4j.io.gpio.RaspiPin;
 import lombok.Getter;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -17,7 +17,6 @@ import statistic.Statistic;
 import utilites.PReader;
 
 public class TelegramBot extends TelegramLongPollingBot {
-    private static final Logger logger = LogManager.getLogger("TelegramBot");
     final static int RECONNECT_PAUSE = 10000;
     final GpioPinDigitalOutput op = GpioFactory.getInstance().provisionDigitalOutputPin(RaspiPin.GPIO_29);
 
