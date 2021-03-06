@@ -13,6 +13,7 @@ import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
+import statistic.Statistic;
 import utilites.PReader;
 
 public class TelegramBot extends TelegramLongPollingBot {
@@ -45,6 +46,10 @@ public class TelegramBot extends TelegramLongPollingBot {
                 case "off": {
                     op.setState(false);
                     break;
+                }
+                case "/stat": {
+                message.setText(Statistic.get());
+                break;
                 }
                 default: {
                     message.setText("unknown command: " + text);
