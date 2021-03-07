@@ -1,0 +1,13 @@
+install: sudo apt install mariadb-server
+use: sudo mysql -u root -p
+
+for allow remote access change in:
+sudo nano /etc/mysql/mariadb.conf.d/50-server.cnf
+port                   = 3306         <---------- needs uncomment
+bind-address            = 0.0.0.0      <--------- needs change 127.0.0.1 to 0.0.0.0
+
+
+CREATE DATABASE <dbname>;
+CREATE USER '<username>'@'%' IDENTIFIED BY '<password>';
+GRANT ALL PRIVILEGES ON <dbname>.* TO '<username>'@'%';
+FLUSH PRIVILEGES;
