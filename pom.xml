@@ -83,25 +83,6 @@
                         </execution>
                     </executions>
                 </plugin>
-                <!--add manifest to jar-->
-               <!-- <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.1.0</version>
-                    <configuration>
-                        <archive>
-                            <manifest>
-                                <addClasspath>true</addClasspath>
-                                <mainClass>Main</mainClass>
-                            </manifest>
-                            <manifestEntries>
-                                &lt;!&ndash; Add the pi4j in runtime. &ndash;&gt;
-                                <Class-Path>/opt/pi4j/lib/pi4j-core.jar</Class-Path>
-                            </manifestEntries>
-
-                        </archive>
-                    </configuration>
-                </plugin>-->
             </plugins>
     </build>
 

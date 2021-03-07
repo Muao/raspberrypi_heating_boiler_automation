@@ -1,11 +1,12 @@
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import telegram_bot.TelegramBot;
+import utilites.SoundUtils;
 
 public class Main {
 
-    public static void main(String[] args){
-
-            System.out.println("app started.." );
+    public static void main(String[] args) {
+        SoundUtils.tone(800, 3000, 1);
+        System.out.println("app started..");
 
         final TelegramBot telegramBot = new TelegramBot();
         try {
@@ -28,6 +29,6 @@ public class Main {
             } catch (IOException e) {
                 e.printStackTrace();
             }*/
-        }
     }
+}
 
