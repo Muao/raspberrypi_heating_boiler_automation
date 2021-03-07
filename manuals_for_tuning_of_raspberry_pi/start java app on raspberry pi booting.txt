@@ -1,0 +1,5 @@
+sudo nano /etc/rc.local
+add string:
+java -jar /home/pi/bau-jar-with-dependencies.jar
+before 'exit 0' string
+
