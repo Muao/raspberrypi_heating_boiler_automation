@@ -1,6 +1,7 @@
 package telegram_bot;
 
 
+import DAO.repository.CommandsLogRepository;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.RaspiPin;
@@ -18,14 +19,14 @@ import utilites.PReader;
 
 public class TelegramBot extends TelegramLongPollingBot {
     final static int RECONNECT_PAUSE = 10000;
-    final GpioPinDigitalOutput op = GpioFactory.getInstance().provisionDigitalOutputPin(RaspiPin.GPIO_29);
-
+    final GpioPinDigitalOutput led = GpioFactory.getInstance().provisionDigitalOutputPin(RaspiPin.GPIO_29);
+    final int allowUserId1 = Integer.parseInt(PReader.read("ALLOW_USER_ID#1"));
+    final int allowUserId2 = Integer.parseInt(PReader.read("ALLOW_USER_ID#2"));
+    final CommandsLogRepository repository = new CommandsLogRepository();
     @Getter
     String botUsername = PReader.read("TELEGRAM_BOT_NAME");
     @Getter
     String botToken = PReader.read("TELEGRAM_BOT_TOKEN");
-    final int allowUserId1 = Integer.parseInt(PReader.read("ALLOW_USER_ID#1"));
-    final int allowUserId2 = Integer.parseInt(PReader.read("ALLOW_USER_ID#2"));
 
     @Override
     public void onUpdateReceived(Update update) {
@@ -33,29 +34,33 @@ public class TelegramBot extends TelegramLongPollingBot {
         final User user = update.getMessage().getFrom();
         final SendMessage message = new SendMessage();
         message.setChatId(chatId);
-        System.out.println(user.getUserName() + " " + user.getId());
+        final String userName = user.getUserName();
+        System.out.println(userName + " " + user.getId());
         if (user.getId() == allowUserId1 || user.getId() == allowUserId2) {
             final String text = update.getMessage().getText();
 
             switch (text) {
-                case "on": {
-                    op.setState(true);
+                case "/on": {
+                    led.setState(true);
+                    repository.save(text, userName);
                     break;
                 }
-                case "off": {
-                    op.setState(false);
+                case "/off": {
+                    led.setState(false);
+                    repository.save(text, userName);
                     break;
                 }
                 case "/stat": {
-                message.setText(Statistic.get());
-                break;
+                    message.setText(Statistic.get());
+                    repository.save(text, userName);
+                    break;
                 }
                 default: {
                     message.setText("unknown command: " + text);
                 }
             }
             if (message.getText() == null) {
-                final String state = op.getState().toString().equals("HIGH") ? "on" : "off";
+                final String state = led.getState().toString().equals("HIGH") ? "on" : "off";
                 message.setText("led is " + state);
             }
 

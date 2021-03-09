@@ -6,7 +6,7 @@ public class Main {
 
     public static void main(String[] args) {
         SoundUtils.tone(800, 3000, 1);
-        System.out.println("app started..");
+        System.out.println("app started2..");
 
         final TelegramBot telegramBot = new TelegramBot();
         try {
