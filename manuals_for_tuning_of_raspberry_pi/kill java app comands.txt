@@ -1,0 +1,10 @@
+ find running process:
+ ps -A |grep java
+ -> 477 ?        00:03:48 java
+
+ kill the process
+sudo kill -9 477
+
+
+search for commands in console:
+ history | grep kill

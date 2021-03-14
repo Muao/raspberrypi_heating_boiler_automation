@@ -6,7 +6,8 @@ import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.RaspiPin;
 import lombok.Getter;
-import lombok.extern.log4j.Log4j;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -18,9 +19,8 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import statistic.Statistic;
 import utilites.PReader;
 
-@Log4j
 public class TelegramBot extends TelegramLongPollingBot {
-
+    private static final Logger log = LogManager.getLogger("TelegramBot");
     final static int RECONNECT_PAUSE = 10000;
     final GpioPinDigitalOutput led = GpioFactory.getInstance().provisionDigitalOutputPin(RaspiPin.GPIO_29);
     final int allowUserId1 = Integer.parseInt(PReader.read("ALLOW_USER_ID#1"));
