@@ -1,5 +1,42 @@
+solution 1
+
 sudo nano /etc/rc.local
 add string:
+#set pause for database can initialize
+sleep 10
+#run jar
 java -jar /home/pi/bau-jar-with-dependencies.jar
 before 'exit 0' string
 
+
+solution 2
+1.add new script to /etc/init.d/ with any name (bau)
+
+start-->
+#!/bin/bash
+
+sleep 10
+UP=$(pgrep mysql | wc -l);
+echo 'mysql is running: $UP' >>/var/log/messages
+echo $UP >>/var/log/messages
+echo 'bau-jar-with-dependencies.jar starting..'  >> /var/log/messages
+java -jar /home/pi/bau-jar-with-dependencies.jar
+exit 0
+
+end-->
+echo commands needs for writing to log file. You can find this messages with the command:
+cat /var/log/messages | grep "sql" -A 1 -B
+
+2. make it executable
+sudo chmod +x bau
+
+3. create link to folder with your runlevel
+sudo ln -s /etc/init.d/bau /etc/rc5.d/S02bau
+
+4. check your runlevel with command 'runlevel'.
+You can set needs runlevel via 'sudo raspi-config'
+
+reboot and enjoy
+
+solution 2 was created on search how to run jar after db init.
+Both solution properly works with sleep command
