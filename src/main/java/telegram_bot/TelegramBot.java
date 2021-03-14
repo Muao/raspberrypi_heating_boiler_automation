@@ -6,6 +6,7 @@ import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.RaspiPin;
 import lombok.Getter;
+import lombok.extern.log4j.Log4j;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -17,7 +18,9 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import statistic.Statistic;
 import utilites.PReader;
 
+@Log4j
 public class TelegramBot extends TelegramLongPollingBot {
+
     final static int RECONNECT_PAUSE = 10000;
     final GpioPinDigitalOutput led = GpioFactory.getInstance().provisionDigitalOutputPin(RaspiPin.GPIO_29);
     final int allowUserId1 = Integer.parseInt(PReader.read("ALLOW_USER_ID#1"));
@@ -35,7 +38,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         final SendMessage message = new SendMessage();
         message.setChatId(chatId);
         final String userName = user.getUserName();
-        System.out.println(userName + " " + user.getId());
+        log.info(userName + " " + user.getId());
         if (user.getId() == allowUserId1 || user.getId() == allowUserId2) {
             final String text = update.getMessage().getText();
 
@@ -80,9 +83,9 @@ public class TelegramBot extends TelegramLongPollingBot {
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
         try {
             telegramBotsApi.registerBot(this);
-            System.out.println("TelegramAPI started. Look for messages");
+            log.info("TelegramAPI started. Look for messages");
         } catch (TelegramApiRequestException e) {
-            System.out.println("Cant Connect. Pause " + RECONNECT_PAUSE / 1000 + "sec and try again. Error: " + e.getMessage());
+            log.info("Can't Connect. Pause " + RECONNECT_PAUSE / 1000 + "sec and try again. Error: " + e.getMessage());
             try {
                 Thread.sleep(RECONNECT_PAUSE);
             } catch (InterruptedException e1) {

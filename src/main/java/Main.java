@@ -1,19 +1,23 @@
+import lombok.extern.log4j.Log4j;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import telegram_bot.TelegramBot;
 import utilites.SoundUtils;
 
+@Log4j
 public class Main {
 
     public static void main(String[] args) {
-        SoundUtils.tone(800, 3000, 1);
-        System.out.println("app started2..");
+        SoundUtils.tone(800, 1000, 1);
+        log.info("App starting..");
 
         final TelegramBot telegramBot = new TelegramBot();
+
         try {
             telegramBot.botConnect();
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
+
 
 
         /*final W1Master master = new W1Master();
