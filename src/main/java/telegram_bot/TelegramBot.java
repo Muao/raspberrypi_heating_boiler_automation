@@ -5,12 +5,15 @@ import DAO.repository.CommandsLogRepository;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.RaspiPin;
+import graphics.Graphics;
 import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -18,6 +21,16 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import statistic.Statistic;
 import utilites.PReader;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 public class TelegramBot extends TelegramLongPollingBot {
     private static final Logger log = LogManager.getLogger("TelegramBot");
@@ -58,6 +71,36 @@ public class TelegramBot extends TelegramLongPollingBot {
                     repository.save(text, userName);
                     break;
                 }
+                case "/graph": {
+                    final SendPhoto sendPhoto = new SendPhoto();
+                    sendPhoto.setChatId(chatId);
+                    BufferedImage myImage = new BufferedImage(400, 400, BufferedImage.TYPE_INT_RGB);
+                    final Integer[] xPoints = {0, 100, 200, 300};
+                    java.util.List<Integer> list = new java.util.ArrayList<>(Arrays.asList(xPoints));
+
+                    final Graphics2D graphImage = new Graphics(list).paintComponent(myImage.createGraphics());
+                    graphImage.setBackground(Color.white);
+                    graphImage.setColor(Color.RED);
+
+//                    final int[] yPoints = {0, 100, 200, 300};
+
+//                    graphImage.fillPolygon(xPoints, yPoints, 4);
+
+
+
+                    ByteArrayOutputStream os = new ByteArrayOutputStream();
+                    try {
+                        ImageIO.write(myImage, "jpeg", os);                          // Passing: ​(RenderedImage im, String formatName, OutputStream output)
+                        InputStream is = new ByteArrayInputStream(os.toByteArray());
+                        sendPhoto.setPhoto(new InputFile(is, "diagramm"));
+                        execute(sendPhoto);
+                    } catch (IOException | TelegramApiException e) {
+                        e.printStackTrace();
+                    }
+
+                    break;
+                }
+
                 default: {
                     message.setText("unknown command: " + text);
                 }
