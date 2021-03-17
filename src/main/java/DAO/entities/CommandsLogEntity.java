@@ -3,9 +3,10 @@ package DAO.entities;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @EqualsAndHashCode
@@ -18,7 +19,8 @@ public class CommandsLogEntity {
     private Long id;
     private String command;
     private String username;
-    private Timestamp date;
+    @CreationTimestamp
+    private LocalDateTime date;
 
     public CommandsLogEntity(String command, String username) {
         this.command = command;

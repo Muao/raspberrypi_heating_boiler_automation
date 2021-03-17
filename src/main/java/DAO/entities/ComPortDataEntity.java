@@ -4,10 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 import utilites.ComportData;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,7 +28,8 @@ public class ComPortDataEntity {
     private double tempPort2;
     private double tempPort3;
     private double tempPort4;
-    private Timestamp date;
+    @CreationTimestamp
+    private LocalDateTime date;
 
     public ComPortDataEntity(ComportData comportData) {
         this.currentPort1 = comportData.getCurrentPort1();
