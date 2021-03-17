@@ -1,6 +1,7 @@
 package utilites;
 
 import com.pi4j.io.serial.*;
+
 import java.io.IOException;
 
 public class ComPortReader {
@@ -23,9 +24,10 @@ public class ComPortReader {
                 final String stingFromComPort = event.getAsciiString();
                 if (!stingFromComPort.startsWith("#")) {
                     final String[] fromComPort = (stingFromComPort.split(","));
+//                    AlarmSystem.checkSensors(fromComPort);
                     final ComportData comportData = new ComportData(fromComPort);
                     dataStorage.add(comportData);
-//                    System.out.println(comportData.toString());
+                    System.out.println(comportData.toString());
                 }
 
             } catch (IOException e) {

@@ -13,14 +13,14 @@ public class ComPortDataStorage extends ArrayList<ComportData> {
         // for 5 minutes
         if (super.size() == 30) {
             final ComportData averageComPortData = new ComportData(
-                    super.stream().mapToDouble(ComportData::getCurrentPort1).average().orElse(0),
-                    super.stream().mapToDouble(ComportData::getCurrentPort2).average().orElse(0),
-                    super.stream().mapToDouble(ComportData::getCurrentPort3).average().orElse(0),
-                    super.stream().mapToDouble(ComportData::getCurrentPort4).average().orElse(0),
-                    super.stream().mapToDouble(ComportData::getTempPort1).average().orElse(0),
-                    super.stream().mapToDouble(ComportData::getTempPort2).average().orElse(0),
-                    super.stream().mapToDouble(ComportData::getTempPort3).average().orElse(0),
-                    super.stream().mapToDouble(ComportData::getTempPort4).average().orElse(0));
+                    super.stream().mapToDouble(ComportData::getCurrentPort1).average().stream().map(Math::round).findFirst().orElse(0),
+                    super.stream().mapToDouble(ComportData::getCurrentPort2).average().stream().map(Math::round).findFirst().orElse(0),
+                    super.stream().mapToDouble(ComportData::getCurrentPort3).average().stream().map(Math::round).findFirst().orElse(0),
+                    super.stream().mapToDouble(ComportData::getCurrentPort4).average().stream().map(Math::round).findFirst().orElse(0),
+                    super.stream().mapToDouble(ComportData::getTempPort1).average().stream().map(Math::round).findFirst().orElse(0),
+                    super.stream().mapToDouble(ComportData::getTempPort2).average().stream().map(Math::round).findFirst().orElse(0),
+                    super.stream().mapToDouble(ComportData::getTempPort3).average().stream().map(Math::round).findFirst().orElse(0),
+                    super.stream().mapToDouble(ComportData::getTempPort4).average().stream().map(Math::round).findFirst().orElse(0));
             repository.save(averageComPortData);
             super.clear();
             System.out.println("flushed!!!!!!!!!!!!!!!!!!");

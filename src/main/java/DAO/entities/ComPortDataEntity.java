@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import utilites.ComportData;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,6 +27,7 @@ public class ComPortDataEntity {
     private double tempPort2;
     private double tempPort3;
     private double tempPort4;
+    private Timestamp date;
 
     public ComPortDataEntity(ComportData comportData) {
         this.currentPort1 = comportData.getCurrentPort1();
