@@ -20,17 +20,14 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import statistic.Statistic;
+import utilites.ComPortReader;
 import utilites.PReader;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 
 public class TelegramBot extends TelegramLongPollingBot {
     private static final Logger log = LogManager.getLogger("TelegramBot");
@@ -71,6 +68,13 @@ public class TelegramBot extends TelegramLongPollingBot {
                     repository.save(text, userName);
                     break;
                 }
+                case "/temp": {
+                    final String whetherReport = String.format("Current Outdoor Temperature: %d \u2103", Math.round(ComPortReader.getCurrentOutdoorTemperature()));
+                    message.setText(whetherReport);
+                    repository.save(text, userName);
+                    break;
+                }
+
                 case "/graph": {
                     final SendPhoto sendPhoto = new SendPhoto();
                     sendPhoto.setChatId(chatId);

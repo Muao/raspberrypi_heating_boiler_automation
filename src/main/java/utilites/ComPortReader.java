@@ -1,10 +1,12 @@
 package utilites;
 
 import com.pi4j.io.serial.*;
+import lombok.Getter;
 
 import java.io.IOException;
 
 public class ComPortReader {
+    @Getter static private double currentOutdoorTemperature;
 
     public static void read() throws IOException, InterruptedException {
         final Serial serial = SerialFactory.createInstance();
@@ -27,6 +29,7 @@ public class ComPortReader {
 //                    AlarmSystem.checkSensors(fromComPort);
                     final ComportData comportData = new ComportData(fromComPort);
                     dataStorage.add(comportData);
+                    currentOutdoorTemperature = comportData.getTempPort4();
                     System.out.println(comportData.toString());
                 }
 
