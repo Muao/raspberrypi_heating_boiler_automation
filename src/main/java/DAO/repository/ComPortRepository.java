@@ -6,7 +6,10 @@ import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import utilites.CalendarUtility;
 import utilites.ComportData;
+
+import java.time.LocalDateTime;
 
 public class ComPortRepository {
     private SessionFactory sessionFactory;
@@ -32,5 +35,21 @@ public class ComPortRepository {
         session.save(new ComPortDataEntity(comportData));
         session.getTransaction().commit();
         session.close();
+    }
+
+    public void getLastNightData(){
+        final LocalDateTime[] localDateTimes = CalendarUtility.previousNight();
+        LocalDateTime start = localDateTimes[0];
+        LocalDateTime end = localDateTimes[1];
+        System.out.println(start + "--> " + end);
+        final Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        final var hql = "FROM ComPortDataEntity c WHERE c.date >= :start and c.date <=:end";
+        final var query = session.createQuery(hql)
+                .setParameter("start", start)
+                .setParameter("end", end);
+        var resultList = query.getResultList();
+        session.close();
+        System.out.println(resultList.toString());
     }
 }
