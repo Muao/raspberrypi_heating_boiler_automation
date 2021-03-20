@@ -9,7 +9,7 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import utilites.CalendarUtility;
 import utilites.ComPortDataUtility;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class ComPortRepository {
@@ -39,9 +39,9 @@ public class ComPortRepository {
     }
 
     public ComPortDataEntity getLastNightData(){
-        final LocalDateTime[] localDateTimes = CalendarUtility.previousNight();
-        LocalDateTime start = localDateTimes[0];
-        LocalDateTime end = localDateTimes[1];
+        final var localDateTimes = CalendarUtility.previousNight();
+        final var start = localDateTimes[0];
+        final var end = localDateTimes[1];
         System.out.println(start + "--> " + end);
         final Session session = sessionFactory.openSession();
         session.beginTransaction();
@@ -54,5 +54,21 @@ public class ComPortRepository {
         final ComPortDataEntity averageObject = ComPortDataUtility.getAverageObject((ArrayList<ComPortDataEntity>) resultList);
         averageObject.setDate(end);
         return averageObject;
+    }
+
+    public ComPortDataEntity getAverage24HourData(LocalDate date){
+        final Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        final var hql = "FROM ComPortDataEntity c WHERE c.date >= :start and c.date <=:end";
+        final var query = session.createQuery(hql)
+                .setParameter("start", date.atStartOfDay())
+                .setParameter("end", date.atStartOfDay().plusDays(1));
+
+        final var resultList = query.getResultList();
+        session.close();
+        final var averageObject = ComPortDataUtility.getAverageObject((ArrayList<ComPortDataEntity>) resultList);
+        averageObject.setDate(date.atStartOfDay());
+        return ComPortDataUtility.getDailyPower(averageObject);
+
     }
 }

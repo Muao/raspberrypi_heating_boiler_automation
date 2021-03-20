@@ -20,4 +20,8 @@ public class CalendarUtility {
         final LocalDateTime endOfNight = startOfNight.plusHours(7);
         return new LocalDateTime[]{startOfNight, endOfNight};
     }
+
+    public static boolean dailyDateMatcher(String text){
+       return text.toLowerCase().matches("^/daily ([0-9]{2})([.]{1})([0-9]{2})([.]{1})([0-9]{2})");
+    }
 }

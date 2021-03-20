@@ -20,4 +20,36 @@ public class CalendarUtilityTest {
         };
         assertArrayEquals(expected, actual);
     }
+
+    @Test
+    public void dailyDateMatcher(){
+        final boolean actual = CalendarUtility.dailyDateMatcher("/daily 30.02.21");
+        {
+            assertTrue(actual);
+        }
+    }
+
+    @Test
+    public void dailyDateMatcherFalseSpace(){
+        final boolean actual = CalendarUtility.dailyDateMatcher("/daily30.02.21");
+        {
+            assertFalse(actual);
+        }
+    }
+
+    @Test
+    public void dailyDateMatcherTrueCapitalize(){
+        final boolean actual = CalendarUtility.dailyDateMatcher("/Daily 30.02.21");
+        {
+            assertTrue(actual);
+        }
+    }
+
+    @Test
+    public void dailyDateMatcherFalseFullYear(){
+        final boolean actual = CalendarUtility.dailyDateMatcher("/daily 30.02.2021");
+        {
+            assertFalse(actual);
+        }
+    }
 }

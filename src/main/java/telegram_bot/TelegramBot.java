@@ -22,6 +22,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import statistic.Statistic;
+import utilites.CalendarUtility;
 import utilites.ComPortDataUtility;
 import utilites.ComPortReader;
 import utilites.PReader;
@@ -29,12 +30,17 @@ import utilites.PReader;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 
 public class TelegramBot extends TelegramLongPollingBot {
-    private static final Logger log = LogManager.getLogger("TelegramBot");
     final static int RECONNECT_PAUSE = 10000;
+    private static final Logger log = LogManager.getLogger("TelegramBot");
     final GpioPinDigitalOutput led = GpioFactory.getInstance().provisionDigitalOutputPin(RaspiPin.GPIO_29);
     final int allowUserId1 = Integer.parseInt(PReader.read("ALLOW_USER_ID#1"));
     final int allowUserId2 = Integer.parseInt(PReader.read("ALLOW_USER_ID#2"));
@@ -108,7 +114,16 @@ public class TelegramBot extends TelegramLongPollingBot {
                 }
 
                 default: {
-                    message.setText("unknown command: " + text);
+                    if (CalendarUtility.dailyDateMatcher(text)) {
+                        final String date = text.replace("/daily ", "");
+                        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d.MM.yy");
+                        final LocalDate localDate = LocalDate.parse(date,formatter);
+                        final ComPortDataEntity average24HourData = comPortRepository.getAverage24HourData(localDate);
+                        final String report = ComPortDataUtility.dailyReportToMessage(average24HourData);
+                        message.setText(report);
+                    } else {
+                        message.setText("unknown command: " + text);
+                    }
                 }
             }
             if (message.getText() == null) {
