@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import utilites.ComportData;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -31,14 +30,25 @@ public class ComPortDataEntity {
     @CreationTimestamp
     private LocalDateTime date;
 
-    public ComPortDataEntity(ComportData comportData) {
-        this.currentPort1 = comportData.getCurrentPort1();
-        this.currentPort2 = comportData.getCurrentPort2();
-        this.currentPort3 = comportData.getCurrentPort3();
-        this.currentPort4 = comportData.getCurrentPort4();
-        this.tempPort1 = comportData.getTempPort1();
-        this.tempPort2 = comportData.getTempPort2();
-        this.tempPort3 = comportData.getTempPort3();
-        this.tempPort4 = comportData.getTempPort4();
+    public ComPortDataEntity(String[] input) {
+        this.currentPort1 = Double.parseDouble(input[0]);
+        this.currentPort2 = Double.parseDouble(input[1]);
+        this.currentPort3 = Double.parseDouble(input[2]);
+        this.currentPort4 = Double.parseDouble(input[3]);
+        this.tempPort1 = Double.parseDouble(input[4]);
+        this.tempPort2 = Double.parseDouble(input[5]);
+        this.tempPort3 = Double.parseDouble(input[6]);
+        this.tempPort4 = Double.parseDouble(input[7]);
+    }
+
+    public ComPortDataEntity(Double[] input) {
+        this.currentPort1 = input[0];
+        this.currentPort2 = input[1];
+        this.currentPort3 = input[2];
+        this.currentPort4 = input[3];
+        this.tempPort1 = input[4];
+        this.tempPort2 = input[5];
+        this.tempPort3 = input[6];
+        this.tempPort4 = input[7];
     }
 }

@@ -1,5 +1,6 @@
 package utilites;
 
+import DAO.entities.ComPortDataEntity;
 import com.pi4j.io.serial.*;
 import lombok.Getter;
 
@@ -21,13 +22,12 @@ public class ComPortReader {
         serial.open(config);
         final ComPortDataStorage dataStorage = new ComPortDataStorage();
         serial.addListener(event -> {
-
             try {
                 final String stingFromComPort = event.getAsciiString();
                 if (!stingFromComPort.startsWith("#")) {
                     final String[] fromComPort = (stingFromComPort.split(","));
 //                    AlarmSystem.checkSensors(fromComPort);
-                    final ComportData comportData = new ComportData(fromComPort);
+                    final ComPortDataEntity comportData = new ComPortDataEntity(fromComPort);
                     dataStorage.add(comportData);
                     currentOutdoorTemperature = comportData.getTempPort4();
                     System.out.println(comportData.toString());

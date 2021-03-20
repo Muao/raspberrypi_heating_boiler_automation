@@ -7,7 +7,6 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import utilites.CalendarUtility;
-import utilites.ComportData;
 
 import java.time.LocalDateTime;
 
@@ -29,10 +28,10 @@ public class ComPortRepository {
         }
     }
 
-    public void save(ComportData comportData) {
+    public void save(ComPortDataEntity comportData) {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-        session.save(new ComPortDataEntity(comportData));
+        session.save(comportData);
         session.getTransaction().commit();
         session.close();
     }
