@@ -1,6 +1,8 @@
 package telegram_bot;
 
 
+import DAO.entities.ComPortDataEntity;
+import DAO.repository.ComPortRepository;
 import DAO.repository.CommandsLogRepository;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
@@ -20,6 +22,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import statistic.Statistic;
+import utilites.ComPortDataUtility;
 import utilites.ComPortReader;
 import utilites.PReader;
 
@@ -36,6 +39,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     final int allowUserId1 = Integer.parseInt(PReader.read("ALLOW_USER_ID#1"));
     final int allowUserId2 = Integer.parseInt(PReader.read("ALLOW_USER_ID#2"));
     final CommandsLogRepository repository = new CommandsLogRepository();
+    final ComPortRepository comPortRepository = new ComPortRepository();
     @Getter
     String botUsername = PReader.read("TELEGRAM_BOT_NAME");
     @Getter
@@ -74,6 +78,11 @@ public class TelegramBot extends TelegramLongPollingBot {
                     repository.save(text, userName);
                     break;
                 }
+                case "/lastnight": {
+                    final ComPortDataEntity lastNightData = comPortRepository.getLastNightData();
+                    message.setText(ComPortDataUtility.comPortDataEntryToMessage(lastNightData));
+                    break;
+                }
 
                 case "/graph": {
                     final SendPhoto sendPhoto = new SendPhoto();
@@ -85,13 +94,6 @@ public class TelegramBot extends TelegramLongPollingBot {
                     final Graphics2D graphImage = new Graphics(list).paintComponent(myImage.createGraphics());
                     graphImage.setBackground(Color.white);
                     graphImage.setColor(Color.RED);
-
-//                    final int[] yPoints = {0, 100, 200, 300};
-
-//                    graphImage.fillPolygon(xPoints, yPoints, 4);
-
-
-
                     ByteArrayOutputStream os = new ByteArrayOutputStream();
                     try {
                         ImageIO.write(myImage, "jpeg", os);                          // Passing: ​(RenderedImage im, String formatName, OutputStream output)

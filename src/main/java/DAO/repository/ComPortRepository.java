@@ -7,8 +7,10 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import utilites.CalendarUtility;
+import utilites.ComPortDataUtility;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 public class ComPortRepository {
     private SessionFactory sessionFactory;
@@ -36,7 +38,7 @@ public class ComPortRepository {
         session.close();
     }
 
-    public void getLastNightData(){
+    public ComPortDataEntity getLastNightData(){
         final LocalDateTime[] localDateTimes = CalendarUtility.previousNight();
         LocalDateTime start = localDateTimes[0];
         LocalDateTime end = localDateTimes[1];
@@ -49,6 +51,8 @@ public class ComPortRepository {
                 .setParameter("end", end);
         var resultList = query.getResultList();
         session.close();
-        System.out.println(resultList.toString());
+        final ComPortDataEntity averageObject = ComPortDataUtility.getAverageObject((ArrayList<ComPortDataEntity>) resultList);
+        averageObject.setDate(end);
+        return averageObject;
     }
 }
