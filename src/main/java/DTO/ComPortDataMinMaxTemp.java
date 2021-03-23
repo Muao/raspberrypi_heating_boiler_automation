@@ -15,8 +15,8 @@ public class ComPortDataMinMaxTemp extends ComPortDataEntity {
         this.maxOutdoorTemp = maxOutdoorTemp;
     }
 
-    public ComPortDataMinMaxTemp(Double[] input, Temperature minOutdoorTemp, Temperature maxOutdoorTemp) {
-        super(input);
+    public ComPortDataMinMaxTemp(ComPortDataEntity entity, Temperature minOutdoorTemp, Temperature maxOutdoorTemp) {
+        super(entity);
         this.minOutdoorTemp = minOutdoorTemp;
         this.maxOutdoorTemp = maxOutdoorTemp;
     }

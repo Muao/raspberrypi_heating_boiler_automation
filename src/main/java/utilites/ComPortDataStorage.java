@@ -2,10 +2,13 @@ package utilites;
 
 import DAO.entities.ComPortDataEntity;
 import DAO.repository.ComPortRepository;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 
 public class ComPortDataStorage extends ArrayList<ComPortDataEntity> {
+    private static final Logger log = LogManager.getLogger("ComPortDataStorage");
     private final ComPortRepository repository = new ComPortRepository();
 
     @Override

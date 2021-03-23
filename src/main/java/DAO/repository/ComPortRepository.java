@@ -52,7 +52,7 @@ public class ComPortRepository {
                 .setParameter("end", end);
         var resultList = query.getResultList();
         session.close();
-        final ComPortDataMinMaxTemp averageObject = ComPortDataUtility.getAverageObject((ArrayList<ComPortDataEntity>) resultList);
+        final ComPortDataMinMaxTemp averageObject = ComPortDataUtility.getAverageMinMax((ArrayList<ComPortDataEntity>) resultList);
         averageObject.setDate(end);
         return averageObject;
     }
@@ -67,7 +67,7 @@ public class ComPortRepository {
 
         final var resultList = query.getResultList();
         session.close();
-        final var averageObject = ComPortDataUtility.getAverageObject((ArrayList<ComPortDataEntity>) resultList);
+        final var averageObject = ComPortDataUtility.getAverageMinMax((ArrayList<ComPortDataEntity>) resultList);
         averageObject.setDate(date.atStartOfDay());
         return ComPortDataUtility.getDailyPower(averageObject);
 

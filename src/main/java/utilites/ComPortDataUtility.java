@@ -8,7 +8,17 @@ import java.util.ArrayList;
 
 public class ComPortDataUtility {
 
-    public static ComPortDataMinMaxTemp getAverageObject(ArrayList<ComPortDataEntity> input){
+    public static ComPortDataMinMaxTemp getAverageMinMax(ArrayList<ComPortDataEntity> input){
+        final ComPortDataEntity averageEntity = getAverageObject(input);
+
+        final Temperature minOutdoorTemp = input.stream().min(new ComPortOutdoorTemperatureComparator()).map(Temperature::new).orElse(null);
+        final Temperature maxOutdoorTemp = input.stream().max(new ComPortOutdoorTemperatureComparator()).map(Temperature::new).orElse(null);
+
+        return new ComPortDataMinMaxTemp(averageEntity, minOutdoorTemp, maxOutdoorTemp);
+    }
+
+        //hibernate can't save inheritance object like a supper
+    public static ComPortDataEntity getAverageObject(ArrayList<ComPortDataEntity> input) {
         final Double[] averageData = new Double[]{
                 input.stream().mapToDouble(ComPortDataEntity::getCurrentPort1).average().stream().map(Math::round).findFirst().orElse(0),
                 input.stream().mapToDouble(ComPortDataEntity::getCurrentPort2).average().stream().map(Math::round).findFirst().orElse(0),
@@ -20,11 +30,9 @@ public class ComPortDataUtility {
                 input.stream().mapToDouble(ComPortDataEntity::getTempPort3).max().stream().map(Math::round).findFirst().orElse(0),
                 input.stream().mapToDouble(ComPortDataEntity::getTempPort4).average().stream().map(Math::round).findFirst().orElse(0)
         };
-        final Temperature minOutdoorTemp = input.stream().min(new ComPortOutdoorTemperatureComparator()).map(Temperature::new).orElse(null);
-        final Temperature maxOutdoorTemp = input.stream().max(new ComPortOutdoorTemperatureComparator()).map(Temperature::new).orElse(null);
-
-        return new ComPortDataMinMaxTemp(averageData, minOutdoorTemp, maxOutdoorTemp);
+        return new ComPortDataEntity(averageData);
     }
+
 
     public static ComPortDataMinMaxTemp getDailyPower(ComPortDataMinMaxTemp input){
         final ComPortDataMinMaxTemp result = new ComPortDataMinMaxTemp(input.getMinOutdoorTemp(), input.getMaxOutdoorTemp());

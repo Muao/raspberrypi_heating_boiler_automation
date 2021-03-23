@@ -1,9 +1,6 @@
 package DAO.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -12,6 +9,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
+@ToString
 @Data
 @Entity
 @Table(name = "COMPORT_DATA", schema = "bau")
@@ -39,6 +37,7 @@ public class ComPortDataEntity {
         this.tempPort2 = Double.parseDouble(input[5]);
         this.tempPort3 = Double.parseDouble(input[6]);
         this.tempPort4 = Double.parseDouble(input[7]);
+        this.setDate(LocalDateTime.now());
     }
 
     public ComPortDataEntity(Double[] input) {
@@ -50,5 +49,19 @@ public class ComPortDataEntity {
         this.tempPort2 = input[5];
         this.tempPort3 = input[6];
         this.tempPort4 = input[7];
+        this.setDate(LocalDateTime.now());
+    }
+
+    public ComPortDataEntity(ComPortDataEntity input) {
+        this.id = input.id;
+        this.currentPort1 = input.currentPort1;
+        this.currentPort2 = input.currentPort2;
+        this.currentPort3 = input.currentPort3;
+        this.currentPort4 = input.currentPort4;
+        this.tempPort1 = input.tempPort1;
+        this.tempPort2 = input.tempPort2;
+        this.tempPort3 = input.tempPort3;
+        this.tempPort4 = input.tempPort4;
+        this.setDate(LocalDateTime.now());
     }
 }
