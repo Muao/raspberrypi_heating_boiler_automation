@@ -34,39 +34,4 @@ public class ComPortDataUtility {
         result.setDate(input.getDate());
         return result;
     }
-
-
-
-    public static String comPortDataEntryToMessage(ComPortDataEntity entity){
-        final StringBuilder sb = new StringBuilder();
-
-        sb.append("Report for night of ").append(entity.getDate().toLocalDate()).append("\n")
-                .append("1st flor average = ").append(entity.getCurrentPort1()).append("W \n")
-                .append("1st flor temperature = ").append(entity.getTempPort1()).append("\u2103 \n")
-                .append("2nd flor average = ").append(entity.getCurrentPort2()).append("W \n")
-                .append("2nd flor temperature = ").append(entity.getTempPort2()).append("\u2103 \n")
-                .append("Boiler average = ").append(entity.getCurrentPort3()).append("W \n")
-                .append("Boiler max temp = ").append(entity.getTempPort3()).append("\u2103 \n")
-                .append("Outdoor temp average = ").append(entity.getTempPort4()).append("\u2103 \n");
-        return sb.toString();
-    }
-
-    public static String dailyReportToMessage(ComPortDataEntity entity) {
-        final StringBuilder sb = new StringBuilder();
-        sb.append("Report for day: ").append(entity.getDate().toLocalDate()).append("\n")
-                .append("Total daily power: ").append(getSumOfPower(entity)).append("W; \n")
-                .append("-----------------------------").append("\n")
-                .append("1st flor heating: ").append(entity.getCurrentPort1()).append("W, ")
-                .append("Average temp: ").append(entity.getTempPort1()).append("\u2103; \n")
-                .append("2nd flor heating: ").append(entity.getCurrentPort2()).append("W, ")
-                .append("Average temp: ").append(entity.getTempPort2()).append("\u2103; \n")
-                .append("Hot water: ").append(entity.getCurrentPort3()).append("W \n")
-                .append("Max output temp: ").append(entity.getTempPort2()).append("\u2103.");
-        return sb.toString();
-    }
-
-    private static String getSumOfPower(ComPortDataEntity entity){
-        final double sum = entity.getCurrentPort1() + entity.getCurrentPort2() + entity.getCurrentPort3();
-        return String.valueOf(sum);
-    }
 }

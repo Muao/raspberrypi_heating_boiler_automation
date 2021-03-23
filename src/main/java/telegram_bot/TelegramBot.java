@@ -21,6 +21,8 @@ import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
+import reports.DailyReport;
+import reports.LastNightReport;
 import statistic.Statistic;
 import utilites.CalendarUtility;
 import utilites.ComPortDataUtility;
@@ -86,7 +88,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 }
                 case "/lastnight": {
                     final ComPortDataEntity lastNightData = comPortRepository.getLastNightData();
-                    message.setText(ComPortDataUtility.comPortDataEntryToMessage(lastNightData));
+                    message.setText(LastNightReport.get(lastNightData));
                     break;
                 }
 
@@ -119,7 +121,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d.MM.yy");
                         final LocalDate localDate = LocalDate.parse(date,formatter);
                         final ComPortDataEntity average24HourData = comPortRepository.getAverage24HourData(localDate);
-                        final String report = ComPortDataUtility.dailyReportToMessage(average24HourData);
+                        final String report = DailyReport.get(average24HourData);
                         message.setText(report);
                     } else {
                         message.setText("unknown command: " + text);
