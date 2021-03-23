@@ -1,7 +1,6 @@
 package telegram_bot;
 
 
-import DAO.entities.ComPortDataEntity;
 import DAO.repository.ComPortRepository;
 import DAO.repository.CommandsLogRepository;
 import DTO.ComPortDataMinMaxTemp;
@@ -26,7 +25,6 @@ import reports.DailyReport;
 import reports.LastNightReport;
 import statistic.Statistic;
 import utilites.CalendarUtility;
-import utilites.ComPortDataUtility;
 import utilites.ComPortReader;
 import utilites.PReader;
 
@@ -81,8 +79,8 @@ public class TelegramBot extends TelegramLongPollingBot {
                     repository.save(text, userName);
                     break;
                 }
-                case "/temp": {
-                    final String whetherReport = String.format("Current Outdoor Temperature: %d \u2103", Math.round(ComPortReader.getCurrentOutdoorTemperature()));
+                case "/current": {
+                    final String whetherReport = String.format("Current measuring: %s", ComPortReader.getCurrent());
                     message.setText(whetherReport);
                     repository.save(text, userName);
                     break;

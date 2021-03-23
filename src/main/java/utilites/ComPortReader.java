@@ -7,7 +7,7 @@ import lombok.Getter;
 import java.io.IOException;
 
 public class ComPortReader {
-    @Getter static private double currentOutdoorTemperature;
+    @Getter static private ComPortDataEntity current;
 
     public static void read() throws IOException, InterruptedException {
         final Serial serial = SerialFactory.createInstance();
@@ -29,8 +29,7 @@ public class ComPortReader {
 //                    AlarmSystem.checkSensors(fromComPort);
                     final ComPortDataEntity comportData = new ComPortDataEntity(fromComPort);
                     dataStorage.add(comportData);
-                    currentOutdoorTemperature = comportData.getTempPort4();
-                    System.out.println(comportData.toString());
+                    current = comportData;
                 }
 
             } catch (IOException e) {
