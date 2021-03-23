@@ -4,9 +4,6 @@ package telegram_bot;
 import DAO.repository.ComPortRepository;
 import DAO.repository.CommandsLogRepository;
 import DTO.ComPortDataMinMaxTemp;
-import com.pi4j.io.gpio.GpioFactory;
-import com.pi4j.io.gpio.GpioPinDigitalOutput;
-import com.pi4j.io.gpio.RaspiPin;
 import graphics.Graphics;
 import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
@@ -42,7 +39,6 @@ import java.util.Arrays;
 public class TelegramBot extends TelegramLongPollingBot {
     final static int RECONNECT_PAUSE = 10000;
     private static final Logger log = LogManager.getLogger("TelegramBot");
-    final GpioPinDigitalOutput led = GpioFactory.getInstance().provisionDigitalOutputPin(RaspiPin.GPIO_29);
     final int allowUserId1 = Integer.parseInt(PReader.read("ALLOW_USER_ID#1"));
     final int allowUserId2 = Integer.parseInt(PReader.read("ALLOW_USER_ID#2"));
     final CommandsLogRepository repository = new CommandsLogRepository();
@@ -64,16 +60,6 @@ public class TelegramBot extends TelegramLongPollingBot {
             final String text = update.getMessage().getText();
 
             switch (text) {
-                case "/on": {
-                    led.setState(true);
-                    repository.save(text, userName);
-                    break;
-                }
-                case "/off": {
-                    led.setState(false);
-                    repository.save(text, userName);
-                    break;
-                }
                 case "/stat": {
                     message.setText(Statistic.get());
                     repository.save(text, userName);
@@ -127,11 +113,6 @@ public class TelegramBot extends TelegramLongPollingBot {
                     }
                 }
             }
-            if (message.getText() == null) {
-                final String state = led.getState().toString().equals("HIGH") ? "on" : "off";
-                message.setText("led is " + state);
-            }
-
         } else {
             message.setText("unknown user");
         }
