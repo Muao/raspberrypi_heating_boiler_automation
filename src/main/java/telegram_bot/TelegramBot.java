@@ -4,6 +4,7 @@ package telegram_bot;
 import DAO.entities.ComPortDataEntity;
 import DAO.repository.ComPortRepository;
 import DAO.repository.CommandsLogRepository;
+import DTO.ComPortDataMinMaxTemp;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.RaspiPin;
@@ -87,7 +88,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                     break;
                 }
                 case "/lastnight": {
-                    final ComPortDataEntity lastNightData = comPortRepository.getLastNightData();
+                    final ComPortDataMinMaxTemp lastNightData = comPortRepository.getLastNightData();
                     message.setText(LastNightReport.get(lastNightData));
                     break;
                 }
@@ -120,7 +121,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                         final String date = text.replace("/daily ", "");
                         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d.MM.yy");
                         final LocalDate localDate = LocalDate.parse(date,formatter);
-                        final ComPortDataEntity average24HourData = comPortRepository.getAverage24HourData(localDate);
+                        final ComPortDataMinMaxTemp average24HourData = comPortRepository.getAverage24HourData(localDate);
                         final String report = DailyReport.get(average24HourData);
                         message.setText(report);
                     } else {

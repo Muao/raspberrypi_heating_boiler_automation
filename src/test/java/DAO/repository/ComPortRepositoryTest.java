@@ -1,6 +1,7 @@
 package DAO.repository;
 
 import DAO.entities.ComPortDataEntity;
+import DTO.ComPortDataMinMaxTemp;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -12,7 +13,7 @@ public class ComPortRepositoryTest {
     @Ignore
     @Test
     public void getLastNightData() {
-        final ComPortDataEntity lastNightData = new ComPortRepository().getLastNightData();
+        final ComPortDataMinMaxTemp lastNightData = new ComPortRepository().getLastNightData();
         System.out.println(lastNightData);
     }
 

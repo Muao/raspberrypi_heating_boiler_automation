@@ -1,6 +1,7 @@
 package DAO.repository;
 
 import DAO.entities.ComPortDataEntity;
+import DTO.ComPortDataMinMaxTemp;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
@@ -38,7 +39,7 @@ public class ComPortRepository {
         session.close();
     }
 
-    public ComPortDataEntity getLastNightData(){
+    public ComPortDataMinMaxTemp getLastNightData(){
         final var localDateTimes = CalendarUtility.previousNight();
         final var start = localDateTimes[0];
         final var end = localDateTimes[1];
@@ -51,12 +52,12 @@ public class ComPortRepository {
                 .setParameter("end", end);
         var resultList = query.getResultList();
         session.close();
-        final ComPortDataEntity averageObject = ComPortDataUtility.getAverageObject((ArrayList<ComPortDataEntity>) resultList);
+        final ComPortDataMinMaxTemp averageObject = ComPortDataUtility.getAverageObject((ArrayList<ComPortDataEntity>) resultList);
         averageObject.setDate(end);
         return averageObject;
     }
 
-    public ComPortDataEntity getAverage24HourData(LocalDate date){
+    public ComPortDataMinMaxTemp getAverage24HourData(LocalDate date){
         final Session session = sessionFactory.openSession();
         session.beginTransaction();
         final var hql = "FROM ComPortDataEntity c WHERE c.date >= :start and c.date <=:end";

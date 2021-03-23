@@ -1,12 +1,14 @@
 package utilites;
 
 import DAO.entities.ComPortDataEntity;
+import DTO.ComPortDataMinMaxTemp;
+import DTO.Temperature;
 
 import java.util.ArrayList;
 
 public class ComPortDataUtility {
 
-    public static ComPortDataEntity getAverageObject(ArrayList<ComPortDataEntity> input){
+    public static ComPortDataMinMaxTemp getAverageObject(ArrayList<ComPortDataEntity> input){
         final Double[] averageData = new Double[]{
                 input.stream().mapToDouble(ComPortDataEntity::getCurrentPort1).average().stream().map(Math::round).findFirst().orElse(0),
                 input.stream().mapToDouble(ComPortDataEntity::getCurrentPort2).average().stream().map(Math::round).findFirst().orElse(0),
@@ -18,11 +20,14 @@ public class ComPortDataUtility {
                 input.stream().mapToDouble(ComPortDataEntity::getTempPort3).max().stream().map(Math::round).findFirst().orElse(0),
                 input.stream().mapToDouble(ComPortDataEntity::getTempPort4).average().stream().map(Math::round).findFirst().orElse(0)
         };
-        return new ComPortDataEntity(averageData);
+        final Temperature minOutdoorTemp = input.stream().min(new ComPortOutdoorTemperatureComparator()).map(Temperature::new).orElse(null);
+        final Temperature maxOutdoorTemp = input.stream().max(new ComPortOutdoorTemperatureComparator()).map(Temperature::new).orElse(null);
+
+        return new ComPortDataMinMaxTemp(averageData, minOutdoorTemp, maxOutdoorTemp);
     }
 
-    public static ComPortDataEntity getDailyPower(ComPortDataEntity input){
-        final ComPortDataEntity result = new ComPortDataEntity();
+    public static ComPortDataMinMaxTemp getDailyPower(ComPortDataMinMaxTemp input){
+        final ComPortDataMinMaxTemp result = new ComPortDataMinMaxTemp(input.getMinOutdoorTemp(), input.getMaxOutdoorTemp());
         result.setCurrentPort1(input.getCurrentPort1() * 24);
         result.setCurrentPort2(input.getCurrentPort2() * 24);
         result.setCurrentPort3(input.getCurrentPort3() * 24);
