@@ -2,6 +2,7 @@ package relay;
 
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
+import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.RaspiPin;
 
 public class RelayController {
@@ -25,21 +26,67 @@ public class RelayController {
 //it's a singleton for setting state on init
     private RelayController() {
         this.p21 = GpioFactory.getInstance().provisionDigitalOutputPin(RaspiPin.GPIO_21);
-        this.p21.setState(false);
+        this.p21.setState(true);
         this.p22 = GpioFactory.getInstance().provisionDigitalOutputPin(RaspiPin.GPIO_22);
-        this.p22.setState(false);
+        this.p22.setState(true);
         this.p23 = GpioFactory.getInstance().provisionDigitalOutputPin(RaspiPin.GPIO_23);
-        this.p23.setState(false);
+        this.p23.setState(true);
         this.p24 = GpioFactory.getInstance().provisionDigitalOutputPin(RaspiPin.GPIO_24);
-        this.p24.setState(false);
+        this.p24.setState(true);
         this.p25 = GpioFactory.getInstance().provisionDigitalOutputPin(RaspiPin.GPIO_25);
-        this.p25.setState(false);
+        this.p25.setState(true);
         this.p27 = GpioFactory.getInstance().provisionDigitalOutputPin(RaspiPin.GPIO_27);
-        this.p27.setState(false);
+        this.p27.setState(true);
         this.p28 = GpioFactory.getInstance().provisionDigitalOutputPin(RaspiPin.GPIO_28);
-        this.p28.setState(false);
+        this.p28.setState(true);
         this.p29 = GpioFactory.getInstance().provisionDigitalOutputPin(RaspiPin.GPIO_29);
-        this.p29.setState(false);
+        this.p29.setState(true);
+    }
+
+    public boolean stopFirstFlourHeating(){
+       /* if(this.p21.isHigh()){*/
+            this.p21.setState(true);
+
+        /*if(this.p22.isHigh()){
+            this.p22.setState(PinState.LOW);
+        }*/
+
+        return this.p21.isLow() /*&& this.p22.isLow()*/;
+    }
+
+    public boolean startFirstFlourHeating(){
+       /* if(this.p21.isLow()){*/
+        System.out.println("start first flour" + this.p21.isLow());
+            this.p21.setState(false);
+
+        /*if(this.p22.isHigh()){
+            this.p22.setState(PinState.HIGH);
+        }*/
+
+        return this.p21.isHigh() /*&& this.p22.isHigh()*/;
+    }
+
+    public boolean stopSecondFlourHeating(){
+       /* if(this.p23.isHigh()){*/
+            this.p23.setState(true);
+
+//        if(this.p27.isHigh()){
+//            this.p27.setState(PinState.LOW);
+//        }
+
+        return this.p23.isLow() /*&& this.p27.isLow()*/;
+    }
+
+    public boolean startSecondFlourHeating(){
+        System.out.println("startSecondFlour " + this.p23.isLow());
+        /*if(this.p23.isLow()){*/
+            this.p23.setState(false);
+
+       /* if(this.p27.isHigh()){
+            this.p27.setState(PinState.HIGH);
+        }*/
+
+        return this.p23.isHigh() /*&& this.p27.isHigh()*/;
     }
 
 

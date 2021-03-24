@@ -1,6 +1,9 @@
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.quartz.SchedulerException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import relay.RelayController;
+import scheduler.SchedulerListener;
 import telegram_bot.TelegramBot;
 import utilites.ComPortReader;
 import utilites.SoundUtils;
@@ -27,6 +30,16 @@ public class Main {
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
+
+        try {
+            SchedulerListener.init();
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+        }
+
+        final RelayController relayController = RelayController.getInstance();
+        relayController.startFirstFlourHeating();
+        relayController.startSecondFlourHeating();
     }
 }
 
