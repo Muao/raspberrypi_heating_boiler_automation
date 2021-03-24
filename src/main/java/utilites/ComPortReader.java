@@ -24,7 +24,7 @@ public class ComPortReader {
         serial.addListener(event -> {
             try {
                 final String stingFromComPort = event.getAsciiString();
-                if (!stingFromComPort.startsWith("#")) {
+                if (Character.isDigit(stingFromComPort.charAt(0))) {
                     final String[] fromComPort = (stingFromComPort.split(","));
 //                    AlarmSystem.checkSensors(fromComPort);
                     final ComPortDataEntity comportData = new ComPortDataEntity(fromComPort);
