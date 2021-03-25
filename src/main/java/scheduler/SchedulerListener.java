@@ -20,7 +20,7 @@ public class SchedulerListener {
 
         final CronTrigger midnightStopTrigger = newTrigger()
                 .withIdentity("stop at midnight", "group1")
-                .withSchedule(CronScheduleBuilder.cronSchedule("1 0 * * * ?"))
+                .withSchedule(CronScheduleBuilder.cronSchedule("0 0 0 * * ?"))
                 .build();
 
         final JobDetail morningStartJob = newJob(StartHeatingAtMorning.class)
@@ -29,7 +29,7 @@ public class SchedulerListener {
 
         final CronTrigger morningStartTrigger = newTrigger()
                 .withIdentity("start at morning", "group1")
-                .withSchedule(CronScheduleBuilder.cronSchedule("0 6 * * * ?"))
+                .withSchedule(CronScheduleBuilder.cronSchedule("0 0 6 * * ?"))
                 .build();
 
         scheduler.scheduleJob(morningStartJob, morningStartTrigger);
