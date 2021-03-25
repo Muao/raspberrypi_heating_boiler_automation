@@ -89,5 +89,13 @@ public class RelayController {
         return this.p23.isHigh() /*&& this.p27.isHigh()*/;
     }
 
+    public String secondFloreState(){
+        return this.p23.getState().getName();
+    }
+
+    public String firstFloreState(){
+        return this.p21.getState().getName();
+    }
+
 
 }

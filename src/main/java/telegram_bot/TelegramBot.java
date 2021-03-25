@@ -18,6 +18,7 @@ import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
+import relay.RelayController;
 import reports.DailyReport;
 import reports.LastNightReport;
 import statistic.Statistic;
@@ -48,6 +49,22 @@ public class TelegramBot extends TelegramLongPollingBot {
     @Getter
     String botToken = PReader.read("TELEGRAM_BOT_TOKEN");
 
+    private static TelegramBot instance;
+
+    public static TelegramBot getInstance(){
+        if (instance == null){
+            instance = new TelegramBot();
+        }
+        return instance;
+    }
+
+    private TelegramBot(){
+        try {
+            this.botConnect();
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
     @Override
     public void onUpdateReceived(Update update) {
         final String chatId = update.getMessage().getChatId().toString();
@@ -60,6 +77,22 @@ public class TelegramBot extends TelegramLongPollingBot {
             final String text = update.getMessage().getText();
 
             switch (text) {
+                case"/stop": {
+                    final RelayController controller = RelayController.getInstance();
+                    controller.stopFirstFlourHeating();
+                    controller.stopSecondFlourHeating();
+                    message.setText("FirstFlour: " + controller.firstFloreState()+ " SecondFlour: " + controller.secondFloreState());
+                    break;
+                }
+
+                case"/start": {
+                    final RelayController controller = RelayController.getInstance();
+                    controller.startFirstFlourHeating();
+                    controller.startSecondFlourHeating();
+                    message.setText("FirstFlour: " + controller.firstFloreState()+ " SecondFlour: " + controller.secondFloreState());
+                    break;
+                }
+
                 case "/stat": {
                     message.setText(Statistic.get());
                     repository.save(text, userName);
@@ -124,7 +157,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    public void botConnect() throws TelegramApiException {
+    private void botConnect() throws TelegramApiException {
 
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
         try {

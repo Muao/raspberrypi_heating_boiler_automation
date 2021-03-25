@@ -17,13 +17,7 @@ public class Main {
         SoundUtils.tone(800, 1000, 1);
         log.info("App starting..");
 
-        final TelegramBot telegramBot = new TelegramBot();
-
-        try {
-            telegramBot.botConnect();
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
+        final TelegramBot telegramBot = TelegramBot.getInstance();
 
         try {
             ComPortReader.read();
