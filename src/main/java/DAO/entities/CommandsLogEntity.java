@@ -9,14 +9,9 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor
-@EqualsAndHashCode
-@Data
 @Entity
 @Table(name = "COMMANDS_LOG", schema = "bau")
-public class CommandsLogEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class CommandsLogEntity extends BaseEntity{
     private String command;
     private String username;
     @CreationTimestamp

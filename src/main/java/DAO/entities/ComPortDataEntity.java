@@ -8,15 +8,12 @@ import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = false)
 @ToString
 @Data
 @Entity
 @Table(name = "COMPORT_DATA", schema = "bau")
-public class ComPortDataEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class ComPortDataEntity extends BaseEntity{
     private double currentPort1;
     private double currentPort2;
     private double currentPort3;
@@ -53,7 +50,6 @@ public class ComPortDataEntity {
     }
 
     public ComPortDataEntity(ComPortDataEntity input) {
-        this.id = input.id;
         this.currentPort1 = input.currentPort1;
         this.currentPort2 = input.currentPort2;
         this.currentPort3 = input.currentPort3;

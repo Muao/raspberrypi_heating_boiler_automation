@@ -3,6 +3,7 @@ package telegram_bot;
 
 import DAO.repository.ComPortRepository;
 import DAO.repository.CommandsLogRepository;
+import DAO.repository.ModeRepository;
 import DTO.ComPortDataMinMaxTemp;
 import graphics.Graphics;
 import lombok.Getter;
@@ -24,6 +25,7 @@ import reports.LastNightReport;
 import statistic.Statistic;
 import utilites.CalendarUtility;
 import utilites.ComPortReader;
+import utilites.CommandUtility;
 import utilites.PReader;
 
 import javax.imageio.ImageIO;
@@ -40,6 +42,7 @@ import java.util.Arrays;
 public class TelegramBot extends TelegramLongPollingBot {
     final static int RECONNECT_PAUSE = 10000;
     private static final Logger log = LogManager.getLogger("TelegramBot");
+    private static TelegramBot instance;
     final int allowUserId1 = Integer.parseInt(PReader.read("ALLOW_USER_ID#1"));
     final int allowUserId2 = Integer.parseInt(PReader.read("ALLOW_USER_ID#2"));
     final CommandsLogRepository repository = new CommandsLogRepository();
@@ -49,22 +52,21 @@ public class TelegramBot extends TelegramLongPollingBot {
     @Getter
     String botToken = PReader.read("TELEGRAM_BOT_TOKEN");
 
-    private static TelegramBot instance;
-
-    public static TelegramBot getInstance(){
-        if (instance == null){
-            instance = new TelegramBot();
-        }
-        return instance;
-    }
-
-    private TelegramBot(){
+    private TelegramBot() {
         try {
             this.botConnect();
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
     }
+
+    public static TelegramBot getInstance() {
+        if (instance == null) {
+            instance = new TelegramBot();
+        }
+        return instance;
+    }
+
     @Override
     public void onUpdateReceived(Update update) {
         final String chatId = update.getMessage().getChatId().toString();
@@ -75,21 +77,22 @@ public class TelegramBot extends TelegramLongPollingBot {
         log.info(userName + " " + user.getId());
         if (user.getId() == allowUserId1 || user.getId() == allowUserId2) {
             final String text = update.getMessage().getText();
+            log.info("command: " + text);
 
             switch (text) {
-                case"/stop": {
+                case "/stop": {
                     final RelayController controller = RelayController.getInstance();
                     controller.stopFirstFlourHeating();
                     controller.stopSecondFlourHeating();
-                    message.setText("FirstFlour: " + controller.firstFloreState()+ " SecondFlour: " + controller.secondFloreState());
+                    message.setText("FirstFlour: " + controller.firstFloreState() + " SecondFlour: " + controller.secondFloreState());
                     break;
                 }
 
-                case"/start": {
+                case "/start": {
                     final RelayController controller = RelayController.getInstance();
                     controller.startFirstFlourHeating();
                     controller.startSecondFlourHeating();
-                    message.setText("FirstFlour: " + controller.firstFloreState()+ " SecondFlour: " + controller.secondFloreState());
+                    message.setText("FirstFlour: " + controller.firstFloreState() + " SecondFlour: " + controller.secondFloreState());
                     break;
                 }
 
@@ -137,10 +140,16 @@ public class TelegramBot extends TelegramLongPollingBot {
                     if (CalendarUtility.dailyDateMatcher(text)) {
                         final String date = text.replace("/daily ", "");
                         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d.MM.yy");
-                        final LocalDate localDate = LocalDate.parse(date,formatter);
+                        final LocalDate localDate = LocalDate.parse(date, formatter);
                         final ComPortDataMinMaxTemp average24HourData = comPortRepository.getAverage24HourData(localDate);
                         final String report = DailyReport.get(average24HourData);
                         message.setText(report);
+                    } else if (CommandUtility.isNewMode(text)) {
+                        final String[] split = text.split("\"");
+                        final String modeName = split[1];
+                        final ModeRepository modeRepository = new ModeRepository();
+                        final String modeMessage = modeRepository.createNewMode(modeName, userName);
+                        message.setText(modeMessage);
                     } else {
                         message.setText("unknown command: " + text);
                     }
