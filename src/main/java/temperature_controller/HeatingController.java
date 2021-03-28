@@ -19,6 +19,7 @@ public class HeatingController {
         if (!NIGHT_MODE && !STOPPED) {
             //first floor
             if (data.getTempPort1() >= 40) {
+                //todo needs to implements STOPPED_1ST_FLOOR and STOPPED_2ND_FLOOR for avoid logic mismatch
                 relayController.stopFirstFloorHeating();
                 HeatingControllerLogRepository.save("stopped 1st floor", data.getTempPort1());
             } else if (data.getTempPort1() <= 30) {

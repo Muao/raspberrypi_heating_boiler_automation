@@ -8,7 +8,8 @@ import temperature_controller.HeatingController;
 import java.io.IOException;
 
 public class ComPortReader {
-    @Getter static private ComPortDataEntity current;
+    @Getter
+    static private ComPortDataEntity current;
 
     public static void read() throws IOException, InterruptedException {
         final Serial serial = SerialFactory.createInstance();
@@ -27,9 +28,8 @@ public class ComPortReader {
                 final String stingFromComPort = event.getAsciiString();
                 if (Character.isDigit(stingFromComPort.charAt(0))) {
                     final String[] fromComPort = (stingFromComPort.split(","));
-//                    AlarmSystem.checkSensors(fromComPort);
                     final ComPortDataEntity comportData = new ComPortDataEntity(fromComPort);
-
+                    AlarmSystem.checkSensors(comportData);
                     HeatingController.control(comportData);
 
                     final ComPortDataEntity filtered = ComPortDataUtility.filterMeasurementErrors(comportData);
