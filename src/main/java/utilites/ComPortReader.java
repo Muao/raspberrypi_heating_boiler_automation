@@ -3,6 +3,7 @@ package utilites;
 import DAO.entities.ComPortDataEntity;
 import com.pi4j.io.serial.*;
 import lombok.Getter;
+import temperature_controller.HeatingController;
 
 import java.io.IOException;
 
@@ -28,8 +29,12 @@ public class ComPortReader {
                     final String[] fromComPort = (stingFromComPort.split(","));
 //                    AlarmSystem.checkSensors(fromComPort);
                     final ComPortDataEntity comportData = new ComPortDataEntity(fromComPort);
-                    dataStorage.add(comportData);
-                    current = comportData;
+
+                    HeatingController.control(comportData);
+
+                    final ComPortDataEntity filtered = ComPortDataUtility.filterMeasurementErrors(comportData);
+                    dataStorage.add(filtered);
+                    current = filtered;
                 }
 
             } catch (IOException e) {

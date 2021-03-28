@@ -102,8 +102,11 @@ public class TelegramBot extends TelegramLongPollingBot {
                     break;
                 }
                 case "/current": {
-                    final String whetherReport = String.format("Current measuring: %s", ComPortReader.getCurrent());
-                    message.setText(whetherReport);
+                    final String whetherReport = ComPortReader.getCurrent().toString();
+                    final RelayController relayController = RelayController.getInstance();
+                    final String firstFloreState = relayController.firstFloreState();
+                    final String secondFloreState = relayController.secondFloreState();
+                    message.setText(whetherReport + "\n------\n" + firstFloreState + secondFloreState);
                     repository.save(text, userName);
                     break;
                 }

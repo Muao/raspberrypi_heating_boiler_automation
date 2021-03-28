@@ -47,4 +47,19 @@ public class ComPortDataUtility {
         result.setDate(input.getDate());
         return result;
     }
+
+    public static ComPortDataEntity filterMeasurementErrors(ComPortDataEntity entity){
+        if (entity.getCurrentPort1() < 30){
+            entity.setCurrentPort1(0);
+        }
+        if (entity.getCurrentPort2() < 30){
+            entity.setCurrentPort2(0);
+        }
+        if (entity.getCurrentPort3() < 20){
+            entity.setCurrentPort3(0);
+        }
+        //have not use any measurements
+        entity.setCurrentPort4(0);
+        return entity;
+    }
 }

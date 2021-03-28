@@ -42,58 +42,48 @@ public class RelayController {
         this.p29.setState(true);
     }
 
-    public boolean stopFirstFlourHeating(){
-       /* if(this.p21.isHigh()){*/
+    public String stopFirstFlourHeating(){
+        if(this.p29.isLow()) {
             this.p29.setState(true);
-
-        /*if(this.p22.isHigh()){
-            this.p22.setState(PinState.LOW);
-        }*/
-
-        return this.p29.isLow() /*&& this.p22.isLow()*/;
+        }
+        return firstFloreState();
     }
 
-    public boolean startFirstFlourHeating(){
-       /* if(this.p21.isLow()){*/
-        System.out.println("start first flour" + this.p29.isLow());
+    public String startFirstFlourHeating(){
+        if(this.p29.isHigh()) {
             this.p29.setState(false);
-
-        /*if(this.p22.isHigh()){
-            this.p22.setState(PinState.HIGH);
-        }*/
-
-        return this.p29.isHigh() /*&& this.p22.isHigh()*/;
+        }
+        return firstFloreState();
     }
 
-    public boolean stopSecondFlourHeating(){
-       /* if(this.p23.isHigh()){*/
+    public String stopSecondFlourHeating(){
+        if(this.p29.isLow()) {
             this.p28.setState(true);
-
-//        if(this.p27.isHigh()){
-//            this.p27.setState(PinState.LOW);
-//        }
-
-        return this.p28.isLow() /*&& this.p27.isLow()*/;
+        }
+        return secondFloreState();
     }
 
-    public boolean startSecondFlourHeating(){
-        System.out.println("startSecondFlour " + this.p28.isLow());
-        /*if(this.p23.isLow()){*/
+    public String startSecondFlourHeating(){
+        if(this.p28.isHigh()) {
             this.p28.setState(false);
-
-       /* if(this.p27.isHigh()){
-            this.p27.setState(PinState.HIGH);
-        }*/
-
-        return this.p28.isHigh() /*&& this.p27.isHigh()*/;
+        }
+        return secondFloreState();
     }
 
     public String secondFloreState(){
-        return this.p28.getState().getName();
+        final String stage1 = this.p28.getState().isHigh() ? "OFF" : "ON";
+        final String stage2 = "OFF";
+        return String.format("Second Flour \n stage 1: %s, \n stage 2: %s.\n-----\n", stage1, stage2);
     }
 
     public String firstFloreState(){
-        return this.p29.getState().getName();
+        final String stage1 = this.p29.getState().isHigh() ? "OFF" : "ON";
+        final String stage2 = "OFF";
+        return String.format("First Flour \n stage 1: %1s, \n stage 2: %2s.\n-----\n", stage1, stage2);
+    }
+
+    public boolean firstFloreStateBool(){
+        return !this.p29.getState().isHigh();
     }
 
 
