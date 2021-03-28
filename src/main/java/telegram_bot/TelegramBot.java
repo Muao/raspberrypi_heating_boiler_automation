@@ -23,6 +23,7 @@ import relay.RelayController;
 import reports.DailyReport;
 import reports.LastNightReport;
 import statistic.Statistic;
+import temperature_controller.HeatingController;
 import utilites.CalendarUtility;
 import utilites.ComPortReader;
 import utilites.CommandUtility;
@@ -82,17 +83,19 @@ public class TelegramBot extends TelegramLongPollingBot {
             switch (text) {
                 case "/stop": {
                     final RelayController controller = RelayController.getInstance();
-                    controller.stopFirstFlourHeating();
-                    controller.stopSecondFlourHeating();
-                    message.setText("FirstFlour: " + controller.firstFloreState() + " SecondFlour: " + controller.secondFloreState());
+                    controller.stopFirstFloorHeating();
+                    controller.stopSecondFloorHeating();
+                    HeatingController.setSTOPPED(true);
+                    message.setText("FirstFloor: " + controller.firstFloorState() + " SecondFloor: " + controller.secondFloorState());
                     break;
                 }
 
                 case "/start": {
                     final RelayController controller = RelayController.getInstance();
-                    controller.startFirstFlourHeating();
-                    controller.startSecondFlourHeating();
-                    message.setText("FirstFlour: " + controller.firstFloreState() + " SecondFlour: " + controller.secondFloreState());
+                    controller.startFirstFloorHeating();
+                    controller.startSecondFloorHeating();
+                    HeatingController.setSTOPPED(false);
+                    message.setText("FirstFloor: " + controller.firstFloorState() + " SecondFloor: " + controller.secondFloorState());
                     break;
                 }
 
@@ -104,8 +107,8 @@ public class TelegramBot extends TelegramLongPollingBot {
                 case "/current": {
                     final String whetherReport = ComPortReader.getCurrent().toString();
                     final RelayController relayController = RelayController.getInstance();
-                    final String firstFloreState = relayController.firstFloreState();
-                    final String secondFloreState = relayController.secondFloreState();
+                    final String firstFloreState = relayController.firstFloorState();
+                    final String secondFloreState = relayController.secondFloorState();
                     message.setText(whetherReport + "\n------\n" + firstFloreState + secondFloreState);
                     repository.save(text, userName);
                     break;

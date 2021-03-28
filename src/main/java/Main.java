@@ -1,6 +1,8 @@
+import DAO.repository.HeatingControllerLogRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.quartz.SchedulerException;
+import relay.RelayController;
 import scheduler.SchedulerListener;
 import telegram_bot.TelegramBot;
 import temperature_controller.HeatingController;
@@ -34,6 +36,12 @@ public class Main {
         }
 
         HeatingController.setNIGHT_MODE(NightDeterminer.isNight(LocalTime.now()));
+        HeatingController.setSTOPPED(false);
+
+        final RelayController relayController = RelayController.getInstance();
+        relayController.startFirstFloorHeating();
+        relayController.startSecondFloorHeating();
+        HeatingControllerLogRepository.save("Started heating after boot app", 0d);
     }
 }
 

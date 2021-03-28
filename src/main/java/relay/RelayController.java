@@ -42,41 +42,41 @@ public class RelayController {
         this.p29.setState(true);
     }
 
-    public String stopFirstFlourHeating(){
+    public String stopFirstFloorHeating(){
         if(this.p29.isLow()) {
             this.p29.setState(true);
         }
-        return firstFloreState();
+        return firstFloorState();
     }
 
-    public String startFirstFlourHeating(){
+    public String startFirstFloorHeating(){
         if(this.p29.isHigh()) {
             this.p29.setState(false);
         }
-        return firstFloreState();
+        return firstFloorState();
     }
 
-    public String stopSecondFlourHeating(){
+    public String stopSecondFloorHeating(){
         if(this.p29.isLow()) {
             this.p28.setState(true);
         }
-        return secondFloreState();
+        return secondFloorState();
     }
 
-    public String startSecondFlourHeating(){
+    public String startSecondFloorHeating(){
         if(this.p28.isHigh()) {
             this.p28.setState(false);
         }
-        return secondFloreState();
+        return secondFloorState();
     }
 
-    public String secondFloreState(){
+    public String secondFloorState(){
         final String stage1 = this.p28.getState().isHigh() ? "OFF" : "ON";
         final String stage2 = "OFF";
         return String.format("Second Flour \n stage 1: %s, \n stage 2: %s.\n-----\n", stage1, stage2);
     }
 
-    public String firstFloreState(){
+    public String firstFloorState(){
         final String stage1 = this.p29.getState().isHigh() ? "OFF" : "ON";
         final String stage2 = "OFF";
         return String.format("First Flour \n stage 1: %1s, \n stage 2: %2s.\n-----\n", stage1, stage2);

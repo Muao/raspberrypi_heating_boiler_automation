@@ -1,5 +1,6 @@
 package scheduler.jobs;
 
+import DAO.repository.HeatingControllerLogRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.quartz.Job;
@@ -9,13 +10,12 @@ import relay.RelayController;
 import temperature_controller.HeatingController;
 
 public class StopHeatingAtMidnight implements Job {
-    private static final Logger log = LogManager.getLogger("SwitchOffHeatingAtMidnight");
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         final RelayController controller = RelayController.getInstance();
-        controller.stopFirstFlourHeating();
-        controller.stopSecondFlourHeating();
+        controller.stopFirstFloorHeating();
+        controller.stopSecondFloorHeating();
         HeatingController.setNIGHT_MODE(true);
-        log.info("successfully stopped at midnight");
+        HeatingControllerLogRepository.save("Stop Heating At Midnight", 0d);
     }
 }
