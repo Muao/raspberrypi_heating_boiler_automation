@@ -36,7 +36,8 @@ public class Main {
         }
 
         HeatingController.setNIGHT_MODE(NightDeterminer.isNight(LocalTime.now()));
-        HeatingController.setSTOPPED(false);
+        HeatingController.setSTOPPED_1ST_FLOOR(false);
+        HeatingController.setSTOPPED_2ND_FLOOR(false);
 
         final RelayController relayController = RelayController.getInstance();
         relayController.startFirstFloorHeating();

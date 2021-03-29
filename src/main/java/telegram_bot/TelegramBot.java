@@ -84,24 +84,28 @@ public class TelegramBot extends TelegramLongPollingBot {
                 case "/stop": {
                     final RelayController controller = RelayController.getInstance();
                     controller.stopFirstFloorHeating();
+                    HeatingController.setSTOPPED_1ST_FLOOR(true);
                     controller.stopSecondFloorHeating();
-                    HeatingController.setSTOPPED(true);
-                    message.setText("FirstFloor: " + controller.firstFloorState() + " SecondFloor: " + controller.secondFloorState());
+                    HeatingController.setSTOPPED_2ND_FLOOR(true);
+                    message.setText(controller.firstFloorState() + controller.secondFloorState());
                     break;
                 }
 
                 case "/start": {
                     final RelayController controller = RelayController.getInstance();
                     controller.startFirstFloorHeating();
+                    HeatingController.setSTOPPED_1ST_FLOOR(false);
                     controller.startSecondFloorHeating();
-                    HeatingController.setSTOPPED(false);
-                    message.setText("FirstFloor: " + controller.firstFloorState() + " SecondFloor: " + controller.secondFloorState());
+                    HeatingController.setSTOPPED_2ND_FLOOR(false);
+                    message.setText(controller.firstFloorState() + controller.secondFloorState());
                     break;
                 }
 
                 case "/stat": {
                     message.setText(Statistic.get());
                     repository.save(text, userName);
+                    final RelayController controller = RelayController.getInstance();
+                    message.setText(Statistic.get() + "\n-----------\n" + controller.firstFloorState() + controller.secondFloorState());
                     break;
                 }
                 case "/current": {

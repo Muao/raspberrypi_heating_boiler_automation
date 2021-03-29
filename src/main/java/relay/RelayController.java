@@ -57,7 +57,7 @@ public class RelayController {
     }
 
     public String stopSecondFloorHeating(){
-        if(this.p29.isLow()) {
+        if(this.p28.isLow()) {
             this.p28.setState(true);
         }
         return secondFloorState();
