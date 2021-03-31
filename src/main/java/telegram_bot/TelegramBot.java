@@ -84,9 +84,8 @@ public class TelegramBot extends TelegramLongPollingBot {
                 case "/stop": {
                     final RelayController controller = RelayController.getInstance();
                     controller.stopFirstFloorHeating();
-                    HeatingController.setSTOPPED_1ST_FLOOR(true);
                     controller.stopSecondFloorHeating();
-                    HeatingController.setSTOPPED_2ND_FLOOR(true);
+                    HeatingController.setGLOBAL_STOPPED(true);
                     message.setText(controller.firstFloorState() + controller.secondFloorState());
                     break;
                 }
@@ -94,9 +93,8 @@ public class TelegramBot extends TelegramLongPollingBot {
                 case "/start": {
                     final RelayController controller = RelayController.getInstance();
                     controller.startFirstFloorHeating();
-                    HeatingController.setSTOPPED_1ST_FLOOR(false);
                     controller.startSecondFloorHeating();
-                    HeatingController.setSTOPPED_2ND_FLOOR(false);
+                    HeatingController.setGLOBAL_STOPPED(false);
                     message.setText(controller.firstFloorState() + controller.secondFloorState());
                     break;
                 }
@@ -157,8 +155,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                     } else if (CommandUtility.isNewMode(text)) {
                         final String[] split = text.split("\"");
                         final String modeName = split[1];
-                        final ModeRepository modeRepository = new ModeRepository();
-                        final String modeMessage = modeRepository.createNewMode(modeName, userName);
+                        final String modeMessage = ModeRepository.createNewMode(modeName, userName);
                         message.setText(modeMessage);
                     } else {
                         message.setText("unknown command: " + text);

@@ -1,9 +1,6 @@
 package DAO.entities;
 
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.Column;
@@ -15,15 +12,19 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @ToString
+@Getter
 @Table(name = "MODE")
 public class ModeEntity extends BaseEntity {
     @NonNull
     @Column(unique = true)
     private String modeName;
     @NonNull
+    @Setter
     private Boolean mode;
     @NonNull
+    @Setter
     private String editor;
     @CreationTimestamp
+    @Setter
     private LocalDateTime editDate;
 }
