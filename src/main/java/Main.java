@@ -37,10 +37,15 @@ public class Main {
 
         HeatingController.setNIGHT_MODE(NightDeterminer.isNight(LocalTime.now()));
         HeatingController.setGLOBAL_STOPPED(false);
-
-        final RelayController relayController = RelayController.getInstance();
-        relayController.startFirstFloorHeating();
-        relayController.startSecondFloorHeating();
+//
+//        final RelayController relayController = RelayController.getInstance();
+//        relayController.startFirstFloorHeating();
+//        try {
+//            Thread.sleep(2000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//        relayController.startSecondFloorHeating();
         HeatingControllerLogRepository.save("Started heating after boot app", 0d);
     }
 }

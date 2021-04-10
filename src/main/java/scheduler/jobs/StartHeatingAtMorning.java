@@ -14,9 +14,14 @@ public class StartHeatingAtMorning implements Job {
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         final RelayController controller = RelayController.getInstance();
-        controller.startFirstFloorHeating();
-        controller.startSecondFloorHeating();
         HeatingController.setNIGHT_MODE(false);
+        controller.startFirstFloorHeating();
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        controller.startSecondFloorHeating();
         HeatingControllerLogRepository.save("Start Heating At Morning", 0d);
     }
 }
