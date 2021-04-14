@@ -6,10 +6,10 @@ import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.RaspiPin;
 
 public class RelayController {
-    private final GpioPinDigitalOutput p21;//relay#1
-    private final GpioPinDigitalOutput p22;//relay#2
-    private final GpioPinDigitalOutput p23;//relay#3
-    private final GpioPinDigitalOutput p24;//relay#5
+    private final GpioPinDigitalOutput p21;//heating floor 1 stage 1
+    private final GpioPinDigitalOutput p22;//heating floor 1 stage 2
+    private final GpioPinDigitalOutput p23;//heating floor 2 stage 1
+    private final GpioPinDigitalOutput p24;///heating floor 2 stage 2
     private final GpioPinDigitalOutput p25;//relay#8
     private final GpioPinDigitalOutput p27;//relay#4
     private final GpioPinDigitalOutput p28;//relay#6
@@ -83,42 +83,54 @@ public class RelayController {
     }
 
     public String stopFirstFloorHeating(){
-        if(this.p29.isLow()) {
-            this.p29.setState(true);
+        if(this.p21.isLow()) {
+            this.p21.setState(true);
+        }
+        if(this.p22.isLow()) {
+            this.p22.setState(true);
         }
         return firstFloorState();
     }
 
     public String startFirstFloorHeating(){
-        if(this.p29.isHigh()) {
-            this.p29.setState(false);
+        if(this.p21.isHigh()) {
+            this.p21.setState(false);
+        }
+        if(this.p22.isHigh()) {
+            this.p22.setState(false);
         }
         return firstFloorState();
     }
 
     public String stopSecondFloorHeating(){
-        if(this.p28.isLow()) {
-            this.p28.setState(true);
+        if(this.p23.isLow()) {
+            this.p23.setState(true);
+        }
+        if(this.p24.isLow()) {
+            this.p24.setState(true);
         }
         return secondFloorState();
     }
 
     public String startSecondFloorHeating(){
-        if(this.p28.isHigh()) {
-            this.p28.setState(false);
+        if(this.p23.isHigh()) {
+            this.p23.setState(false);
+        }
+        if(this.p24.isHigh()) {
+            this.p24.setState(false);
         }
         return secondFloorState();
     }
 
     public String secondFloorState(){
-        final String stage1 = this.p28.getState().isHigh() ? "OFF" : "ON";
-        final String stage2 = "OFF";
+        final String stage1 = this.p23.getState().isHigh() ? "OFF" : "ON";
+        final String stage2 = this.p24.getState().isHigh() ? "OFF" : "ON";
         return String.format("Second Floor \n stage 1: %s, \n stage 2: %s.\n-----\n", stage1, stage2);
     }
 
     public String firstFloorState(){
-        final String stage1 = this.p29.getState().isHigh() ? "OFF" : "ON";
-        final String stage2 = "OFF";
+        final String stage1 = this.p21.getState().isHigh() ? "OFF" : "ON";
+        final String stage2 = this.p22.getState().isHigh() ? "OFF" : "ON";
         return String.format("First Floor \n stage 1: %1s, \n stage 2: %2s.\n-----\n", stage1, stage2);
     }
 
