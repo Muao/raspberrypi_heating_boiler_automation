@@ -23,11 +23,9 @@ public class Main {
 //needs only register and start bot
         final TelegramBot telegramBot = TelegramBot.getInstance();
 
-        try {
-            ComPortReader.read();
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
+            final ComPortReader comPortReader = new ComPortReader();
+            final Thread readerThread = new Thread(comPortReader);
+            readerThread.start();
 
         try {
             SchedulerListener.init();

@@ -7,7 +7,7 @@ import temperature_controller.HeatingController;
 
 import java.io.IOException;
 
-public class ComPortReader {
+public class ComPortReader implements Runnable{
     @Getter
     static private ComPortDataEntity current;
 
@@ -41,5 +41,14 @@ public class ComPortReader {
                 e.printStackTrace();
             }
         });
+    }
+
+    @Override
+    public void run() {
+        try {
+            read();
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
