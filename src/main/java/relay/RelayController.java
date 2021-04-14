@@ -126,5 +126,18 @@ public class RelayController {
         return !this.p29.getState().isHigh();
     }
 
+    public String allRelayState(){
+        return new StringBuilder()
+                .append(this.p21.getState().toString()).append("\n")
+                .append(this.p22.getState().toString()).append("\n")
+                .append(this.p23.getState().toString()).append("\n")
+                .append(this.p24.getState().toString()).append("\n")
+                .append(this.p25.getState().toString()).append("\n")
+                .append(this.p27.getState().toString()).append("\n")
+                .append(this.p28.getState().toString()).append("\n")
+                .append(this.p29.getState().toString()).append("\n")
+                .toString();
+    }
+
 
 }

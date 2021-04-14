@@ -5,6 +5,7 @@ import DAO.repository.ComPortRepository;
 import DAO.repository.CommandsLogRepository;
 import DAO.repository.ModeRepository;
 import DTO.ComPortDataMinMaxTemp;
+import com.pi4j.io.gpio.PinState;
 import graphics.Graphics;
 import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
@@ -24,10 +25,7 @@ import reports.DailyReport;
 import reports.LastNightReport;
 import statistic.Statistic;
 import temperature_controller.HeatingController;
-import utilites.CalendarUtility;
-import utilites.ComPortReader;
-import utilites.CommandUtility;
-import utilites.PReader;
+import utilites.*;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -81,6 +79,18 @@ public class TelegramBot extends TelegramLongPollingBot {
             log.info("command: " + text);
 
             switch (text) {
+                case "/reboot": {
+                    RaspberryPi.reboot();
+                    message.setText("..rebooting");
+                    break;
+                }
+
+                case"/shutdown": {
+                    RaspberryPi.shutdown();
+                    message.setText("..shutdown");
+                    break;
+                }
+
                 case "/stop": {
                     final RelayController controller = RelayController.getInstance();
                     controller.stopFirstFloorHeating();
@@ -103,7 +113,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                     message.setText(Statistic.get());
                     repository.save(text, userName);
                     final RelayController controller = RelayController.getInstance();
-                    message.setText(Statistic.get() + "\n-----------\n" + controller.firstFloorState() + controller.secondFloorState());
+                    message.setText(Statistic.get() + "\n-----------\n" + controller.allRelayState());
                     break;
                 }
                 case "/current": {
@@ -157,6 +167,13 @@ public class TelegramBot extends TelegramLongPollingBot {
                         final String modeName = split[1];
                         final String modeMessage = ModeRepository.createNewMode(modeName, userName);
                         message.setText(modeMessage);
+                    } else if(text.startsWith("/ss")){
+                        final String[] s = text.split(" ");
+                        final RelayController controller = RelayController.getInstance();
+                        final PinState state = Integer.parseInt(s[2]) == 0 ? PinState.LOW : PinState.HIGH;
+
+                        final String set = controller.set(s[1], state);
+                        message.setText(s[1] + " --> " + state + "==" + set);
                     } else {
                         message.setText("unknown command: " + text);
                     }
