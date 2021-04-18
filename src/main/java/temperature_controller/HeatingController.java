@@ -14,8 +14,37 @@ public class HeatingController {
     @Getter
     @Setter
     private static boolean GLOBAL_STOPPED;
+
     private static boolean FIRST_FLOOR_STOPPED = true;
     private static boolean SECOND_FLOOR_STOPPED = true;
+
+    private static String getMessage(boolean state){
+        return state ? "started" : "STOPPED";
+    }
+
+    public static void setFirstFloorStopped(boolean state, String userName) {
+        FIRST_FLOOR_STOPPED = state;
+        HeatingControllerLogRepository.save(String.format("Manual " + getMessage(state)+ " 1st floor by user %s", userName));
+    }
+
+    public static void setSecondFloorStopped(boolean state, String userName) {
+        SECOND_FLOOR_STOPPED = state;
+        HeatingControllerLogRepository.save(String.format("Manual " + getMessage(state)+ " 2st floor by user %s", userName));
+    }
+
+    public static void manualStart(String userName){
+        FIRST_FLOOR_STOPPED = false;
+        SECOND_FLOOR_STOPPED = false;
+        GLOBAL_STOPPED = false;
+        HeatingControllerLogRepository.save(String.format("Manual started all by user %s", userName));
+    }
+
+    public static void manualStop(String userName){
+        FIRST_FLOOR_STOPPED = true;
+        SECOND_FLOOR_STOPPED = true;
+        GLOBAL_STOPPED = true;
+        HeatingControllerLogRepository.save(String.format("Manual STOPPED ALL by user %s", userName));
+    }
 
     public static void control(ComPortDataEntity data) {
         if (!NIGHT_MODE) {

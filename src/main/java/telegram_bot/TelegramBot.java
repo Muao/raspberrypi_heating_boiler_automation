@@ -5,7 +5,10 @@ import DAO.repository.ComPortRepository;
 import DAO.repository.CommandsLogRepository;
 import DAO.repository.ModeRepository;
 import DTO.ComPortDataMinMaxTemp;
+import com.pi4j.component.temperature.impl.TmpDS18B20DeviceType;
 import com.pi4j.io.gpio.PinState;
+import com.pi4j.io.w1.W1Device;
+import com.pi4j.io.w1.W1Master;
 import graphics.Graphics;
 import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
@@ -37,6 +40,7 @@ import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.List;
 
 public class TelegramBot extends TelegramLongPollingBot {
     final static int RECONNECT_PAUSE = 10000;
@@ -95,53 +99,67 @@ public class TelegramBot extends TelegramLongPollingBot {
                     final RelayController controller = RelayController.getInstance();
                     controller.stopFirstFloorHeating();
                     controller.stopSecondFloorHeating();
-                    HeatingController.setGLOBAL_STOPPED(true);
+                    HeatingController.manualStop(userName);
                     message.setText(controller.firstFloorState() + controller.secondFloorState());
                     break;
                 }
 
                 case "/stop1": {
-                    final RelayController controller = RelayController.getInstance();
-                    controller.stopFirstFloorHeating();
-                    message.setText(controller.firstFloorState());
+                    final RelayController relayController = RelayController.getInstance();
+                    relayController.stopFirstFloorHeating();
+                    HeatingController.setFirstFloorStopped(true, userName);
+                    message.setText(relayController.firstFloorState());
                     break;
                 }
 
                 case "/stop2": {
-                    final RelayController controller = RelayController.getInstance();
-                    controller.stopSecondFloorHeating();
-                    message.setText(controller.secondFloorState());
+                    final RelayController relayController = RelayController.getInstance();
+                    relayController.stopSecondFloorHeating();
+                    HeatingController.setSecondFloorStopped(true, userName);
+                    message.setText(relayController.secondFloorState());
                     break;
                 }
 
                 case "/start": {
-                    final RelayController controller = RelayController.getInstance();
-                    controller.startFirstFloorHeating();
-                    controller.startSecondFloorHeating();
-                    HeatingController.setGLOBAL_STOPPED(false);
-                    message.setText(controller.firstFloorState() + controller.secondFloorState());
+                    final RelayController relayController = RelayController.getInstance();
+                    relayController.startFirstFloorHeating();
+                    relayController.startSecondFloorHeating();
+                    HeatingController.manualStart(userName);
+                    message.setText(relayController.firstFloorState() + relayController.secondFloorState());
                     break;
                 }
 
                 case "/start1": {
-                    final RelayController controller = RelayController.getInstance();
-                    controller.startFirstFloorHeating();
-                    message.setText(controller.firstFloorState());
+                    final RelayController relayController = RelayController.getInstance();
+                    relayController.startFirstFloorHeating();
+                    HeatingController.setFirstFloorStopped(false, userName);
+                    message.setText(relayController.firstFloorState());
                     break;
                 }
 
                 case "/start2": {
-                    final RelayController controller = RelayController.getInstance();
-                    controller.startSecondFloorHeating();
-                    message.setText(controller.secondFloorState());
+                    final RelayController relayController = RelayController.getInstance();
+                    relayController.startSecondFloorHeating();
+                    HeatingController.setSecondFloorStopped(false, userName);
+                    message.setText(relayController.secondFloorState());
                     break;
                 }
 
                 case "/stat": {
-                    message.setText(Statistic.get());
                     repository.save(text, userName);
                     final RelayController controller = RelayController.getInstance();
-                    message.setText(Statistic.get() + "\n-----------\n" + controller.allRelayState());
+                    final W1Master w1Master = new W1Master();
+                    final List<W1Device> devices = w1Master.getDevices();
+                    String devises = String.valueOf(devices.size());
+                    for (W1Device d : devices) {
+                        devises += (d.getName() + " --> " + d.getId() +" --> " + d.getFamilyId() + "\n");
+                    }
+                    message.setText(Statistic.get() +
+                            "\n-----------\n" +
+                            controller.allRelayState() +
+                            "\n-----------\n" +
+                            devises
+                    );
                     break;
                 }
                 case "/current": {

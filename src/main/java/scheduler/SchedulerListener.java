@@ -8,9 +8,9 @@ import scheduler.jobs.StartHeatingAtMorning;
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
 
-public class SchedulerListener {
+public class SchedulerListener implements Runnable {
 
-    public static void init() throws SchedulerException {
+    private static void init() throws SchedulerException {
         final SchedulerFactory sf = new StdSchedulerFactory();
         final Scheduler scheduler = sf.getScheduler();
 
@@ -35,5 +35,14 @@ public class SchedulerListener {
         scheduler.scheduleJob(morningStartJob, morningStartTrigger);
         scheduler.scheduleJob(midnightStopJob, midnightStopTrigger);
         scheduler.start();
+    }
+
+    @Override
+    public void run() {
+        try {
+            init();
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+        }
     }
 }

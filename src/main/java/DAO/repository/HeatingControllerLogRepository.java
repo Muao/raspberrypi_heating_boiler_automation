@@ -24,6 +24,10 @@ public class HeatingControllerLogRepository {
         }
     }
 
+    public static void save(String action){
+        save(action, 0d);
+    }
+
     public static void save(String action, Double temperature){
         final HeatingControllerLogEntity entity = new HeatingControllerLogEntity(action, temperature);
         if (sessionFactory == null){
