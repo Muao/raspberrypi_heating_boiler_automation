@@ -1,5 +1,6 @@
 package relay;
 
+import DAO.repository.HeatingControllerLogRepository;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.PinState;
@@ -82,14 +83,21 @@ public class RelayController {
         }
 
     }
+    public String stopFirstFloorHeating() {
+        return stopFirstFloorHeating(0d);
+    }
 
-    public String stopFirstFloorHeating(){
+    public String stopFirstFloorHeating(double firstFloorTemp){
+        String message = "STOPPED 1st floor ";
         if(this.p21.isLow()) {
             this.p21.setState(true);
+            message += "stage 1 ";
         }
         if(this.p22.isLow()) {
             this.p22.setState(true);
+            message += "stage 2";
         }
+        HeatingControllerLogRepository.save(message, firstFloorTemp);
         return firstFloorState();
     }
 
@@ -100,12 +108,16 @@ public class RelayController {
     public String startFirstFloorHeating(double outdoorTemp, double firstFloorTemp, boolean force){
         final boolean startSecondStage = RelayControllerUtility.isSecondStageMustRun(outdoorTemp, firstFloorTemp, force);
 
+        String message = "1st floor started ";
         if(this.p21.isHigh() && !startSecondStage) {
             this.p21.setState(false);
+            message += "stage 1 ";
         }
         if(this.p22.isHigh() && startSecondStage) {
             this.p22.setState(false);
+            message += "stage 2";
         }
+        HeatingControllerLogRepository.save(message, firstFloorTemp);
         return firstFloorState();
     }
 
