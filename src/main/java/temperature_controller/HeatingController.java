@@ -56,12 +56,10 @@ public class HeatingController {
 
             final double outdoorTemp = data.getTempPort4();
             if (firstFloorTemp >= MAX_TEMP && !FIRST_FLOOR_STOPPED) {
-                relayController.stopFirstFloorHeating();
-                HeatingControllerLogRepository.save("STOPPED 1st floor", firstFloorTemp);
+                relayController.stopFirstFloorHeating(firstFloorTemp);
                 FIRST_FLOOR_STOPPED = true;
             } else if (firstFloorTemp <= MIN_TEMP && !GLOBAL_STOPPED && FIRST_FLOOR_STOPPED) {
                 relayController.startFirstFloorHeating(outdoorTemp, firstFloorTemp, false);
-                HeatingControllerLogRepository.save("started 1st floor", firstFloorTemp);
                 FIRST_FLOOR_STOPPED = false;
             }
 
