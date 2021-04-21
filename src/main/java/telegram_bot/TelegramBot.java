@@ -145,6 +145,14 @@ public class TelegramBot extends TelegramLongPollingBot {
                     break;
                 }
 
+                case "/warmer" : {
+                    final RelayController relayController = RelayController.getInstance();
+                    relayController.startFirstFloorHeating(true);
+                    HeatingController.setFirstFloorStopped(false, userName);
+                    message.setText(relayController.firstFloorState());
+                    break;
+                }
+
                 case "/stat": {
                     repository.save(text, userName);
                     final RelayController controller = RelayController.getInstance();
