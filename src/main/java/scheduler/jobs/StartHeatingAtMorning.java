@@ -15,7 +15,7 @@ public class StartHeatingAtMorning implements Job {
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         final RelayController controller = RelayController.getInstance();
         HeatingController.setNIGHT_MODE(false);
-        controller.startFirstFloorHeating();
+        controller.startFirstFloorHeating(true); //run 2d stage on morning
         try {
             Thread.sleep(3000);
         } catch (InterruptedException e) {

@@ -122,7 +122,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
                 case "/start": {
                     final RelayController relayController = RelayController.getInstance();
-                    relayController.startFirstFloorHeating();
+                    relayController.startFirstFloorHeating(false);
                     relayController.startSecondFloorHeating();
                     HeatingController.manualStart(userName);
                     message.setText(relayController.firstFloorState() + relayController.secondFloorState());
@@ -131,7 +131,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
                 case "/start1": {
                     final RelayController relayController = RelayController.getInstance();
-                    relayController.startFirstFloorHeating();
+                    relayController.startFirstFloorHeating(false);
                     HeatingController.setFirstFloorStopped(false, userName);
                     message.setText(relayController.firstFloorState());
                     break;

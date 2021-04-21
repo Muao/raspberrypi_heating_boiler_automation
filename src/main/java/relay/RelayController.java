@@ -4,6 +4,7 @@ import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.RaspiPin;
+import utilites.RelayControllerUtility;
 
 public class RelayController {
     private final GpioPinDigitalOutput p21;//heating floor 1 stage 1
@@ -92,11 +93,17 @@ public class RelayController {
         return firstFloorState();
     }
 
-    public String startFirstFloorHeating(){
-        if(this.p21.isHigh()) {
+    public String startFirstFloorHeating(boolean force) {
+        return startFirstFloorHeating(0d, 0d, force);
+    }
+
+    public String startFirstFloorHeating(double outdoorTemp, double firstFloorTemp, boolean force){
+        final boolean startSecondStage = RelayControllerUtility.isSecondStageMustRun(outdoorTemp, firstFloorTemp, force);
+
+        if(this.p21.isHigh() && !startSecondStage) {
             this.p21.setState(false);
         }
-        if(this.p22.isHigh()) {
+        if(this.p22.isHigh() && startSecondStage) {
             this.p22.setState(false);
         }
         return firstFloorState();

@@ -17,6 +17,8 @@ public class HeatingController {
 
     private static boolean FIRST_FLOOR_STOPPED = true;
     private static boolean SECOND_FLOOR_STOPPED = true;
+    private static int MAX_TEMP = 30;
+    private static int MIN_TEMP = 23;
 
     private static String getMessage(boolean state){
         return state ? "started" : "STOPPED";
@@ -47,28 +49,34 @@ public class HeatingController {
     }
 
     public static void control(ComPortDataEntity data) {
-        if (!NIGHT_MODE) {
+        final double firstFloorTemp = data.getTempPort1();
+        //(firstFloorTemp < 4 && firstFloorTemp > -20) - avoid freeze heating system
+        if (!NIGHT_MODE || (firstFloorTemp < 4 && firstFloorTemp > -20)) {
             //first floor
-            if (data.getTempPort1() >= 30 && !FIRST_FLOOR_STOPPED) {
+
+            final double outdoorTemp = data.getTempPort4();
+            if (firstFloorTemp >= MAX_TEMP && !FIRST_FLOOR_STOPPED) {
                 relayController.stopFirstFloorHeating();
-                HeatingControllerLogRepository.save("STOPPED 1st floor", data.getTempPort1());
+                HeatingControllerLogRepository.save("STOPPED 1st floor", firstFloorTemp);
                 FIRST_FLOOR_STOPPED = true;
-            } else if (data.getTempPort1() <= 23 && !GLOBAL_STOPPED && FIRST_FLOOR_STOPPED) {
-                relayController.startFirstFloorHeating();
-                HeatingControllerLogRepository.save("started 1st floor", data.getTempPort1());
+            } else if (firstFloorTemp <= MIN_TEMP && !GLOBAL_STOPPED && FIRST_FLOOR_STOPPED) {
+                relayController.startFirstFloorHeating(outdoorTemp, firstFloorTemp, false);
+                HeatingControllerLogRepository.save("started 1st floor", firstFloorTemp);
                 FIRST_FLOOR_STOPPED = false;
             }
 
             //second floor
-            if (data.getTempPort2() >= 30 && !SECOND_FLOOR_STOPPED) {
+            if (data.getTempPort2() >= MAX_TEMP && !SECOND_FLOOR_STOPPED) {
                 relayController.stopSecondFloorHeating();
                 HeatingControllerLogRepository.save("STOPPED 2nd floor", data.getTempPort2());
                 SECOND_FLOOR_STOPPED = true;
-            } else if (data.getTempPort2() <= 23 && !GLOBAL_STOPPED && SECOND_FLOOR_STOPPED) {
+            } else if (data.getTempPort2() <= MIN_TEMP && !GLOBAL_STOPPED && SECOND_FLOOR_STOPPED) {
                 relayController.startSecondFloorHeating();
                 HeatingControllerLogRepository.save("started 2nd floor", data.getTempPort2());
                 SECOND_FLOOR_STOPPED = false;
             }
         }
     }
+
+
 }
