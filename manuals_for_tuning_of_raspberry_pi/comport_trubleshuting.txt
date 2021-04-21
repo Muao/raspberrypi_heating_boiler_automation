@@ -1,0 +1,22 @@
+I had a problem with reading from com port on I2C one wire interface plug in device experiments.
+
+1.sudo raspi-config needs to disable com port console logging and enable to use interface
+2. in /boot/config only needs:
+------------------------------------------------------------
+# Enable audio (loads snd_bcm2835)
+dtparam=audio=on
+
+[pi4]
+# Enable DRM VC4 V3D driver on top of the dispmanx display stack
+#dtoverlay=vc4-fkms-v3d
+max_framebuffers=2
+
+[all]
+#dtoverlay=vc4-fkms-v3d
+#dtoverlay=w1-gpio,gpiopin=25
+
+#it's temperature and currency le chacal RPICT4T4 com port
+enable_uart=1
+--------------------------------------------------------------
+
+
