@@ -108,7 +108,7 @@ public class RelayController {
     public String startFirstFloorHeating(double outdoorTemp, double firstFloorTemp, boolean force){
         final boolean startSecondStage = RelayControllerUtility.isSecondStageMustRun(outdoorTemp, firstFloorTemp, force);
 
-        String message = "1st floor started ";
+        String message = "started 1st floor ";
         if(this.p21.isHigh() && !startSecondStage) {
             this.p21.setState(false);
             message += "stage 1 ";

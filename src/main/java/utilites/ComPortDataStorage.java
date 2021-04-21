@@ -16,8 +16,8 @@ public class ComPortDataStorage extends ArrayList<ComPortDataEntity> {
         //if(super.size() == 434) //3600 sec per hour. get new data every 9 sec.
         // for 5 minutes = 30
         //for 30 min = 180
-        //for 60 min 360
-        if (super.size() == 360) {
+        //for 60 min 390
+        if (super.size() == 390) {
             final ComPortDataEntity averageComPortData = ComPortDataUtility.getAverageObject(this);
             repository.save(averageComPortData);
             super.clear();
