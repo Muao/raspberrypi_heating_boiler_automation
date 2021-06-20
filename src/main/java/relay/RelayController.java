@@ -83,21 +83,21 @@ public class RelayController {
 
     }
 
-    public String stopFirstFloorHeating(){
+    public void stopFirstFloorHeating(){
         if(this.p21.isLow()) {
             this.p21.setState(true);
         }
         if(this.p22.isLow()) {
             this.p22.setState(true);
         }
-        return firstFloorState();
+        firstFloorState();
     }
 
-    public String startFirstFloorHeating(boolean force) {
-        return startFirstFloorHeating(0d, 0d, force);
+    public void startFirstFloorHeating(boolean force) {
+        startFirstFloorHeating(0d, 0d, force);
     }
 
-    public String startFirstFloorHeating(double outdoorTemp, double firstFloorTemp, boolean force){
+    public void startFirstFloorHeating(double outdoorTemp, double firstFloorTemp, boolean force){
         final boolean startSecondStage = RelayControllerUtility.isSecondStageMustRun(outdoorTemp, firstFloorTemp, force);
 
         if(this.p21.isHigh() && !startSecondStage) {
@@ -106,27 +106,24 @@ public class RelayController {
         if(this.p22.isHigh() && startSecondStage) {
             this.p22.setState(false);
         }
-        return firstFloorState();
     }
 
-    public String stopSecondFloorHeating(){
+    public void stopSecondFloorHeating(){
         if(this.p23.isLow()) {
             this.p23.setState(true);
         }
         if(this.p24.isLow()) {
             this.p24.setState(true);
         }
-        return secondFloorState();
     }
 
-    public String startSecondFloorHeating(){
+    public void startSecondFloorHeating(){
         if(this.p23.isHigh()) {
             this.p23.setState(false);
         }
         if(this.p24.isHigh()) {
             this.p24.setState(false);
         }
-        return secondFloorState();
     }
 
     public String secondFloorState(){

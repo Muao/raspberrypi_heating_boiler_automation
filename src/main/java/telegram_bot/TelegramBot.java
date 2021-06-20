@@ -5,7 +5,6 @@ import DAO.repository.ComPortRepository;
 import DAO.repository.CommandsLogRepository;
 import DAO.repository.ModeRepository;
 import DTO.ComPortDataMinMaxTemp;
-import com.pi4j.component.temperature.impl.TmpDS18B20DeviceType;
 import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.w1.W1Device;
 import com.pi4j.io.w1.W1Master;
@@ -43,17 +42,12 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TelegramBot extends TelegramLongPollingBot {
-    final static int RECONNECT_PAUSE = 10000;
     private static final Logger log = LogManager.getLogger("TelegramBot");
     private static TelegramBot instance;
-    final int allowUserId1 = Integer.parseInt(PReader.read("ALLOW_USER_ID#1"));
-    final int allowUserId2 = Integer.parseInt(PReader.read("ALLOW_USER_ID#2"));
-    final CommandsLogRepository repository = new CommandsLogRepository();
-    final ComPortRepository comPortRepository = new ComPortRepository();
-    @Getter
-    String botUsername = PReader.read("TELEGRAM_BOT_NAME");
-    @Getter
-    String botToken = PReader.read("TELEGRAM_BOT_TOKEN");
+    private final int allowUserId1 = Integer.parseInt(PReader.read("ALLOW_USER_ID#1"));
+    private final int allowUserId2 = Integer.parseInt(PReader.read("ALLOW_USER_ID#2"));
+    private final CommandsLogRepository repository = new CommandsLogRepository();
+    private final ComPortRepository comPortRepository = new ComPortRepository();
 
     private TelegramBot() {
         try {
@@ -75,12 +69,11 @@ public class TelegramBot extends TelegramLongPollingBot {
         final String chatId = update.getMessage().getChatId().toString();
         final User user = update.getMessage().getFrom();
         final SendMessage message = new SendMessage();
-        message.setChatId(chatId);
         final String userName = user.getUserName();
-        log.info(userName + " " + user.getId());
+
+        message.setChatId(chatId);
         if (user.getId() == allowUserId1 || user.getId() == allowUserId2) {
             final String text = update.getMessage().getText();
-            log.info("command: " + text);
 
             switch (text) {
                 case "/reboot": {
@@ -150,9 +143,13 @@ public class TelegramBot extends TelegramLongPollingBot {
                     final RelayController controller = RelayController.getInstance();
                     final W1Master w1Master = new W1Master();
                     final List<W1Device> devices = w1Master.getDevices();
-                    String devises = String.valueOf(devices.size());
+                    StringBuilder devises = new StringBuilder(String.valueOf(devices.size()));
                     for (W1Device d : devices) {
-                        devises += (d.getName() + " --> " + d.getId() +" --> " + d.getFamilyId() + "\n");
+                        devises.append(d.getName())
+                                .append(" --> ")
+                                .append(d.getId())
+                                .append(" --> ")
+                                .append(d.getFamilyId()).append("\n");
                     }
                     message.setText(Statistic.get() +
                             "\n-----------\n" +
@@ -237,8 +234,9 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     private void botConnect() throws TelegramApiException {
+        final int RECONNECT_PAUSE = 10000;
+        final TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
 
-        TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
         try {
             telegramBotsApi.registerBot(this);
             log.info("TelegramAPI started. Look for messages");
@@ -254,5 +252,15 @@ public class TelegramBot extends TelegramLongPollingBot {
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public String getBotUsername() {
+        return PReader.read("TELEGRAM_BOT_NAME");
+    }
+
+    @Override
+    public String getBotToken() {
+        return PReader.read("TELEGRAM_BOT_TOKEN");
     }
 }
