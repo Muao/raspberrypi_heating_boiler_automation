@@ -1,6 +1,4 @@
 import DAO.repository.HeatingControllerLogRepository;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import scheduler.SchedulerListener;
 import telegram_bot.TelegramBot;
 import temperature_controller.HeatingController;

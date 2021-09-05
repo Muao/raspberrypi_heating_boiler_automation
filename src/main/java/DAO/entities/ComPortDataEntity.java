@@ -68,7 +68,7 @@ public class ComPortDataEntity extends BaseEntity {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
-        sb.append("Current report for ").append(date.format(DateTimeFormatter.ofPattern("dd.MM.yyyy hh:mm")))
+        sb.append("Current report for ").append(date.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")))
                 .append("\n")
                 .append("1st floor power: ").append(currentPort1).append("W \n")
                 .append("1st floor temperature: ").append(tempPort1).append("\u2103 \n")

@@ -4,11 +4,11 @@ import DAO.entities.ComPortDataEntity;
 import DTO.ComPortDataMinMaxTemp;
 import DTO.Temperature;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class ComPortDataUtility {
 
-    public static ComPortDataMinMaxTemp getAverageMinMax(ArrayList<ComPortDataEntity> input){
+    public static ComPortDataMinMaxTemp getAverageMinMax(List<ComPortDataEntity> input){
         final ComPortDataEntity averageEntity = getAverageObject(input);
 
         final Temperature minOutdoorTemp = input.stream().min(new ComPortOutdoorTemperatureComparator()).map(Temperature::new).orElse(null);
@@ -18,7 +18,7 @@ public class ComPortDataUtility {
     }
 
         //hibernate can't save inheritance object like a supper
-    public static ComPortDataEntity getAverageObject(ArrayList<ComPortDataEntity> input) {
+    public static ComPortDataEntity getAverageObject(List<ComPortDataEntity> input) {
         final Double[] averageData = new Double[]{
                 input.stream().mapToDouble(ComPortDataEntity::getCurrentPort1).average().stream().map(Math::round).findFirst().orElse(0),
                 input.stream().mapToDouble(ComPortDataEntity::getCurrentPort2).average().stream().map(Math::round).findFirst().orElse(0),

@@ -1,15 +1,14 @@
 package telegram_bot;
 
 
-import DAO.repository.ComPortRepository;
 import DAO.repository.CommandsLogRepository;
 import DAO.repository.ModeRepository;
+import DAO.servises.ComPortDataService;
 import DTO.ComPortDataMinMaxTemp;
 import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.w1.W1Device;
 import com.pi4j.io.w1.W1Master;
 import graphics.Graphics;
-import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -47,7 +46,6 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final int allowUserId1 = Integer.parseInt(PReader.read("ALLOW_USER_ID#1"));
     private final int allowUserId2 = Integer.parseInt(PReader.read("ALLOW_USER_ID#2"));
     private final CommandsLogRepository repository = new CommandsLogRepository();
-    private final ComPortRepository comPortRepository = new ComPortRepository();
 
     private TelegramBot() {
         try {
@@ -177,7 +175,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                     break;
                 }
                 case "/lastnight": {
-                    final ComPortDataMinMaxTemp lastNightData = comPortRepository.getLastNightData();
+                    final ComPortDataMinMaxTemp lastNightData = ComPortDataService.getLastNightData();
                     message.setText(LastNightReport.get(lastNightData));
                     break;
                 }
@@ -204,13 +202,18 @@ public class TelegramBot extends TelegramLongPollingBot {
 
                     break;
                 }
+                case "/daily": {
+                    final String report = DailyReport.get(ComPortDataService.getAverage24HourData(LocalDate.now().minusDays(1)));
+                    message.setText(report);
+                    break;
+                }
 
                 default: {
                     if (CalendarUtility.dailyDateMatcher(text)) {
                         final String date = text.replace("/daily ", "");
                         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d.MM.yy");
                         final LocalDate localDate = LocalDate.parse(date, formatter);
-                        final ComPortDataMinMaxTemp average24HourData = comPortRepository.getAverage24HourData(localDate);
+                        final ComPortDataMinMaxTemp average24HourData = ComPortDataService.getAverage24HourData(localDate);
                         final String report = DailyReport.get(average24HourData);
                         message.setText(report);
                     } else if (CommandUtility.isNewMode(text)) {

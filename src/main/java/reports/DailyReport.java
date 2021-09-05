@@ -3,10 +3,15 @@ package reports;
 import DAO.entities.ComPortDataEntity;
 import DTO.ComPortDataMinMaxTemp;
 
+import javax.annotation.Nullable;
 import java.time.format.DateTimeFormatter;
 
 public class DailyReport {
-    public static String get(ComPortDataMinMaxTemp entity){
+    public static String get(@Nullable ComPortDataMinMaxTemp entity){
+        if (entity == null){
+            return "Have no data";
+        }
+
         final StringBuilder sb = new StringBuilder();
         sb.append("Report for day: ").append(entity.getDate().toLocalDate()).append("\n")
                 .append("---------------------------------\n")

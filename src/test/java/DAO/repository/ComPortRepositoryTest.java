@@ -1,6 +1,7 @@
 package DAO.repository;
 
 import DAO.entities.ComPortDataEntity;
+import DAO.servises.ComPortDataService;
 import DTO.ComPortDataMinMaxTemp;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -13,7 +14,7 @@ public class ComPortRepositoryTest {
     @Ignore
     @Test
     public void getLastNightData() {
-        final ComPortDataMinMaxTemp lastNightData = new ComPortRepository().getLastNightData();
+        final ComPortDataMinMaxTemp lastNightData = ComPortDataService.getLastNightData();
         System.out.println(lastNightData);
     }
 
@@ -26,7 +27,7 @@ public class ComPortRepositoryTest {
 
         final LocalDate localDate = LocalDate.parse(date, formatter);
 
-        final ComPortDataEntity averageDay = new ComPortRepository().getAverage24HourData(localDate);
+        final ComPortDataEntity averageDay = ComPortDataService.getAverage24HourData(localDate);
         System.out.println(averageDay);
     }
 }
