@@ -1,0 +1,6 @@
+1) ps -C java -o pid //find pid of java process (if it is)
+answer: PID 808
+
+2) sudo kill -9 808 //kill current process
+
+3) java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=192.168.88.228:8000 -jar /home/pi/bau-jar-with-dependencies.jar //run
