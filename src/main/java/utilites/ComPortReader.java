@@ -27,7 +27,7 @@ public class ComPortReader implements Runnable{
             try {
                 final String stingFromComPort = event.getAsciiString();
                 if (Character.isDigit(stingFromComPort.charAt(0))) {
-                    final String[] fromComPort = (stingFromComPort.split(","));
+                    final String[] fromComPort = (stingFromComPort.trim().split(","));
                     final ComPortDataEntity comportData = new ComPortDataEntity(fromComPort);
                     AlarmSystem.checkSensors(comportData);
                     HeatingController.control(comportData);
