@@ -2,10 +2,15 @@ package reports;
 
 import DTO.ComPortDataMinMaxTemp;
 
+import javax.annotation.Nullable;
 import java.time.format.DateTimeFormatter;
 
 public class LastNightReport {
-    public static String get(ComPortDataMinMaxTemp entity){
+    public static String get(@Nullable ComPortDataMinMaxTemp entity){
+        if(entity == null){
+            return "Have no data";
+        }
+
         final StringBuilder sb = new StringBuilder();
 
         sb.append("Report for night of ").append(entity.getDate().toLocalDate()).append("\n")

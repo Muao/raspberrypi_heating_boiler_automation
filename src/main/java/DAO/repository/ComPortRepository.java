@@ -10,6 +10,7 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import utilites.CalendarUtility;
 import utilites.ComPortDataUtility;
 
+import javax.annotation.Nullable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -39,11 +40,14 @@ public class ComPortRepository {
         session.close();
     }
 
+    @Nullable
     public ComPortDataMinMaxTemp getLastNightData(){
+        ComPortDataMinMaxTemp result = null;
+
         final var localDateTimes = CalendarUtility.previousNight();
         final var start = localDateTimes[0];
         final var end = localDateTimes[1];
-        System.out.println(start + "--> " + end);
+
         final Session session = sessionFactory.openSession();
         session.beginTransaction();
         final var hql = "FROM ComPortDataEntity c WHERE c.date >= :start and c.date <=:end";
@@ -52,9 +56,13 @@ public class ComPortRepository {
                 .setParameter("end", end);
         var resultList = query.getResultList();
         session.close();
-        final ComPortDataMinMaxTemp averageObject = ComPortDataUtility.getAverageMinMax((ArrayList<ComPortDataEntity>) resultList);
-        averageObject.setDate(end);
-        return averageObject;
+
+        if(resultList.size() != 0) {
+            final ComPortDataMinMaxTemp averageObject = ComPortDataUtility.getAverageMinMax((ArrayList<ComPortDataEntity>) resultList);
+            averageObject.setDate(end);
+            result = averageObject;
+        }
+        return result;
     }
 
     public ComPortDataMinMaxTemp getAverage24HourData(LocalDate date){
