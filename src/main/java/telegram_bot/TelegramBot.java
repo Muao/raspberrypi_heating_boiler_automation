@@ -3,6 +3,7 @@ package telegram_bot;
 
 import DAO.repository.CommandsLogRepository;
 import DAO.repository.ModeRepository;
+import DAO.servises.ChatUserService;
 import DAO.servises.ComPortDataService;
 import DTO.ComPortDataMinMaxTemp;
 import com.pi4j.io.gpio.PinState;
@@ -205,6 +206,10 @@ public class TelegramBot extends TelegramLongPollingBot {
                 case "/daily": {
                     final String report = DailyReport.get(ComPortDataService.getAverage24HourData(LocalDate.now().minusDays(1)));
                     message.setText(report);
+                    break;
+                }
+                case "/subscribe_sys": {
+                    message.setText(ChatUserService.saveUser(user, chatId));
                     break;
                 }
 

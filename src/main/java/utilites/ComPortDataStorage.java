@@ -13,7 +13,7 @@ public class ComPortDataStorage extends ArrayList<ComPortDataEntity> {
         // for 5 minutes = 30
         //for 30 min = 180
         //for 60 min 390
-        if (super.size() == 390) {
+        if (super.size() == 200) {
             final ComPortDataEntity averageComPortData = ComPortDataUtility.getAverageObject(this);
             ComPortRepository.getInstance().save(averageComPortData);
             super.clear();
